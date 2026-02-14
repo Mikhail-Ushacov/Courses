@@ -1,0 +1,56 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Windows.Input;
+public class RegistrationViewModel : INotifyPropertyChanged
+{
+    private ObservableCollection<Course> availableCourses;
+    private readonly RegistrationService _registrationService;
+
+    public ObservableCollection<Course> AvailableCourses
+    {
+        get { return availableCourses; }
+        set
+        {
+            availableCourses = value;
+            OnPropertyChanged(nameof(AvailableCourses));
+        }
+    }
+
+    public ICommand RegisterCommand { get; }
+
+    public RegistrationViewModel()
+    {
+        _registrationService = new RegistrationService();
+        RegisterCommand = new RelayCommand(RegisterForCourse);
+        LoadAvailableCourses();
+    }
+
+    private void LoadAvailableCourses()
+    {
+        var courses = _databaseService.GetCourses();
+        AvailableCourses = new ObservableCollection<Course>(courses);
+    }
+
+    private void RegisterForCourse(object parameter)
+    {
+        if (parameter is Course course)
+        {
+            var isRegistered = _registrationService.RegisterStudentToCourse(1, course.CourseId); // Replace with actual student ID
+            if (isRegistered)
+            {
+                // Notify user about successful registration
+            }
+            else
+            {
+                // Notify user about failure
+            }
+        }
+    }
+
+    public event PropertyChangedEventHandler PropertyChanged;
+
+    protected virtual void OnPropertyChanged(string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+}

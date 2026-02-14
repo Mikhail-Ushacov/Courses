@@ -1,0 +1,8 @@
+<Page x:Class="EducationalSystem.LecturePage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Lecture Page">
+    <Grid>
+        <TextBlock Text="{Binding LectureContent}" Margin="10" TextWrapping="Wrap"/>
+    </Grid>
+</Page>

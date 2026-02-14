@@ -1,0 +1,28 @@
+<Page x:Class="EducationalSystem.TestPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Test Page">
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Test Questions" FontSize="20" Margin="10"/>
+            <ListView ItemsSource="{Binding TestQuestions}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <TextBlock Text="{Binding QuestionText}" />
+                            <ListBox ItemsSource="{Binding AnswerOptions}">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <CheckBox Content="{Binding AnswerText}" />
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Button Content="Submit" Command="{Binding SubmitTestCommand}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="10"/>
+        </StackPanel>
+    </Grid>
+</Page>

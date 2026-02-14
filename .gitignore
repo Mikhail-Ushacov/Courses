@@ -1,0 +1,109 @@
+## Windows #
+####################
+# Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows Installer package
+*.appx
+*.appxbundle
+
+# Windows Installer logs
+*.cab
+
+# Windows Installer package
+*.zip
+
+# Windows Installer packages
+*.tar
+*.tar.gz
+*.tgz
+
+# Windows Event Logs
+*.evtx
+
+# Windows Registry files
+*.regtrans-ms
+
+# Windows Backup files
+*.bak
+*.bck
+
+# Windows Temporary files
+Thumbs.db
+ehthumbs.db
+
+# Windows shortcut files
+Desktop.ini
+$RECYCLE.BIN/
+
+####################
+## Build results
+####################
+# Windows Installer package
+[Dd]ebug/
+[Dd]ebugPublic/
+[Dd]ebug_netcore/
+[Dd]ebug_x86/
+[Dd]ebug_x64/
+[Dd]ebug_arm/
+[Dd]Release/
+[Dd]eploy/
+[Dd]otnet/
+[Dd]ebugBuild/
+
+# Windows User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.idea/
+.vs/
+.vscode/
+.vs2019/
+.vs2017/
+
+####################
+## .NET specific ##
+####################
+# User-specific files
+.idea/
+.vs/
+.vscode/
+
+# User-specific files for VS Code
+.vscode/*
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# User-specific project files
+.vs2019/
+
+# ASP.NET Temporary Files
+.vs2019/
+
+####################
+## Windows File Cache ##
+######################
+# Windows Installer database files
+*.cab
+*.dat
+
+# Build Results
+bin/
+obj/
+
+# .NET Core temporary folders
+bin/
+obj/
+.vscode/
+
+# PostgreSQL database dumps
+*.sql
+*.bak
+
+# PostgreSQL logs
+pg_log/
