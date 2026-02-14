@@ -4,6 +4,7 @@ using System.Windows.Input;
 public class RegistrationViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Course> availableCourses;
+    private readonly DatabaseService _databaseService;
     private readonly RegistrationService _registrationService;
 
     public ObservableCollection<Course> AvailableCourses
@@ -20,6 +21,7 @@ public class RegistrationViewModel : INotifyPropertyChanged
 
     public RegistrationViewModel()
     {
+        _databaseService = new DatabaseService();
         _registrationService = new RegistrationService();
         RegisterCommand = new RelayCommand(RegisterForCourse);
         LoadAvailableCourses();

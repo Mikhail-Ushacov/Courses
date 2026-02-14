@@ -24,7 +24,6 @@ public class CourseViewModel : INotifyPropertyChanged
 
     private void LoadCourse(int courseId)
     {
-        // Fetch course details from database
         var course = _databaseService.GetCourseById(courseId);
         CurrentCourse = course;
     }

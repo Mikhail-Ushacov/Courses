@@ -4,6 +4,7 @@ using System.Windows.Input;
 public class TestViewModel : INotifyPropertyChanged
 {
     private Test currentTest;
+    private readonly DatabaseService _databaseService;
     private readonly FileService _fileService;
 
     public Test CurrentTest
@@ -20,6 +21,7 @@ public class TestViewModel : INotifyPropertyChanged
 
     public TestViewModel(int testId)
     {
+        _databaseService = new DatabaseService();
         _fileService = new FileService();
         LoadTest(testId);
     }

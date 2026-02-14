@@ -23,16 +23,10 @@ public class MainViewModel : INotifyPropertyChanged
     public MainViewModel()
     {
         _databaseService = new DatabaseService();
-        GoToCoursesCommand = new RelayCommand(GoToCourses);
-        GoToLoginCommand = new RelayCommand(GoToLogin);
+        GoToCoursesCommand = new RelayCommand(_ => GoToCourses());
+        GoToLoginCommand = new RelayCommand(_ => GoToLogin());
 
         LoadCourses();
-    }
-
-    private void LoadCourses()
-    {
-        var courses = _databaseService.GetCourses();
-        AvailableCourses = new ObservableCollection<Course>(courses);
     }
 
     private void GoToCourses()
@@ -43,6 +37,12 @@ public class MainViewModel : INotifyPropertyChanged
     private void GoToLogin()
     {
         // Logic to navigate to login page
+    }
+
+    private void LoadCourses()
+    {
+        var courses = _databaseService.GetCourses();
+        AvailableCourses = new ObservableCollection<Course>(courses);
     }
 
     public event PropertyChangedEventHandler PropertyChanged;
