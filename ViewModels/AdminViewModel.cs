@@ -39,49 +39,4 @@ public class AdminViewModel
             Courses.Remove(course);
         }
     }
-
-    public List<User> GetAllUsers()
-{
-    var users = new List<User>();
-
-    using var conn = new SqliteConnection(ConnectionString);
-    conn.Open();
-
-    var cmd = new SqliteCommand("SELECT UserId, Username, Password, UserType FROM Users", conn);
-    using var reader = cmd.ExecuteReader();
-
-    while (reader.Read())
-    {
-        users.Add(new User
-        {
-            UserId = reader.GetInt32(0),
-            Username = reader.GetString(1),
-            Password = reader.GetString(2),
-            UserType = reader.GetInt32(3)
-        });
-    }
-
-    return users;
-}
-
-public void DeleteUser(int userId)
-{
-    using var conn = new SqliteConnection(ConnectionString);
-    conn.Open();
-
-    var cmd = new SqliteCommand("DELETE FROM Users WHERE UserId = @Id", conn);
-    cmd.Parameters.AddWithValue("@Id", userId);
-    cmd.ExecuteNonQuery();
-}
-
-public void DeleteCourse(int courseId)
-{
-    using var conn = new SqliteConnection(ConnectionString);
-    conn.Open();
-
-    var cmd = new SqliteCommand("DELETE FROM Courses WHERE CourseId = @Id", conn);
-    cmd.Parameters.AddWithValue("@Id", courseId);
-    cmd.ExecuteNonQuery();
-}
-
 }
