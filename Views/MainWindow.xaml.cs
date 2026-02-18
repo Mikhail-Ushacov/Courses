@@ -3,7 +3,7 @@ using System.IO;
 using System.Windows;
 using Courses.Services;
 
-namespace Courses.Views
+namespace Courses
 {
     /// <summary>
     /// Логіка взаємодії для MainWindow.xaml

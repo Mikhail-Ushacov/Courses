@@ -64,28 +64,6 @@ public class AdminViewModel
     return users;
 }
 
-public List<Course> GetAllCourses()
-{
-    var courses = new List<Course>();
-
-    using var conn = new SqliteConnection(ConnectionString);
-    conn.Open();
-
-    var cmd = new SqliteCommand("SELECT CourseId, CourseName FROM Courses", conn);
-    using var reader = cmd.ExecuteReader();
-
-    while (reader.Read())
-    {
-        courses.Add(new Course
-        {
-            CourseId = reader.GetInt32(0),
-            CourseName = reader.GetString(1)
-        });
-    }
-
-    return courses;
-}
-
 public void DeleteUser(int userId)
 {
     using var conn = new SqliteConnection(ConnectionString);

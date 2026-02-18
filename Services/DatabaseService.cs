@@ -305,53 +305,44 @@ public List<Test> GetTestsByCourseId(int courseId)
 
     return tests;
 }
-
-public List<User> GetAllUsers()
-{
-    var users = new List<User>();
-
-    using var connection = new SqliteConnection(ConnectionString);
-    connection.Open();
-
-    var command = connection.CreateCommand();
-    command.CommandText = "SELECT Id, Username, Role FROM Users";
-
-    using var reader = command.ExecuteReader();
-    while (reader.Read())
+    public List<Course> GetAllCourses()
     {
-        users.Add(new User
+        var courses = new List<Course>();
+
+        using var conn = new SqliteConnection(ConnectionString);
+        conn.Open();
+
+        var cmd = new SqliteCommand("SELECT CourseId, CourseName FROM Courses", conn);
+        using var reader = cmd.ExecuteReader();
+
+        while (reader.Read())
         {
-            Id = reader.GetInt32(0),
-            Username = reader.GetString(1),
-            Role = reader.GetString(2)
-        });
+            courses.Add(new Course
+            {
+                CourseId = reader.GetInt32(0),
+                CourseName = reader.GetString(1)
+            });
+        }
+
+        return courses;
     }
 
-    return users;
-}
-
-public List<Course> GetAllCourses()
-{
-    var courses = new List<Course>();
-
-    using var connection = new SqliteConnection(ConnectionString);
-    connection.Open();
-
-    var command = connection.CreateCommand();
-    command.CommandText = "SELECT Id, Title FROM Courses";
-
-    using var reader = command.ExecuteReader();
-    while (reader.Read())
-    {
-        courses.Add(new Course
-        {
-            Id = reader.GetInt32(0),
-            Title = reader.GetString(1)
-        });
+    public List<User> GetAllUsers() {
+        var users = new List<User>();
+        using var conn = new SqliteConnection(ConnectionString);
+        conn.Open();
+        var cmd = new SqliteCommand("SELECT UserId, Username, Password, UserType FROM Users", conn);
+        using var reader = cmd.ExecuteReader();
+        while (reader.Read()) {
+            users.Add(new User {
+                UserId = reader.GetInt32(0),
+                Username = reader.GetString(1),
+                Password = reader.GetString(2),
+                UserType = (UserType)reader.GetInt32(3)
+            });
+        }
+        return users;
     }
-
-    return courses;
-}
 
 public void DeleteUser(int userId)
 {
@@ -359,7 +350,7 @@ public void DeleteUser(int userId)
     connection.Open();
 
     var command = connection.CreateCommand();
-    command.CommandText = "DELETE FROM Users WHERE Id = @id";
+    command.CommandText = "DELETE FROM Users WHERE UserId = @id";
     command.Parameters.AddWithValue("@id", userId);
     command.ExecuteNonQuery();
 }
@@ -370,7 +361,7 @@ public void DeleteCourse(int courseId)
     connection.Open();
 
     var command = connection.CreateCommand();
-    command.CommandText = "DELETE FROM Courses WHERE Id = @id";
+    command.CommandText = "DELETE FROM Courses WHERE CourseId = @id";
     command.Parameters.AddWithValue("@id", courseId);
     command.ExecuteNonQuery();
 }
