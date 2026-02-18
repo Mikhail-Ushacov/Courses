@@ -2,14 +2,30 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Teacher Page">
+
     <Grid>
-        <ListView ItemsSource="{Binding ManagedCourses}">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Course Name" DisplayMemberBinding="{Binding CourseName}" />
-                    <GridViewColumn Header="Number of Students" DisplayMemberBinding="{Binding EnrolledStudentsCount}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
+        <TabControl>
+            <TabItem Header="Managed Courses">
+                <ListView ItemsSource="{Binding ManagedCourses}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Course Name" DisplayMemberBinding="{Binding CourseName}" />
+                            <GridViewColumn Header="Enrolled Students" DisplayMemberBinding="{Binding EnrolledStudentsCount}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+
+            <TabItem Header="Students Performance">
+                <ListView ItemsSource="{Binding StudentsPerformance}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Student" DisplayMemberBinding="{Binding StudentName}" />
+                            <GridViewColumn Header="Grade" DisplayMemberBinding="{Binding Grade}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Page>
