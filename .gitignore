@@ -107,3 +107,5 @@ obj/
 
 # PostgreSQL logs
 pg_log/
+
+source.txt

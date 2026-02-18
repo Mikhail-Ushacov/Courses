@@ -1,45 +1,46 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+
 public class TestViewModel : INotifyPropertyChanged
 {
-    private Test currentTest;
     private readonly DatabaseService _databaseService;
-    private readonly FileService _fileService;
+    private readonly int _userId;
+    private readonly int _courseId;
 
-    public Test CurrentTest
-    {
-        get { return currentTest; }
-        set
-        {
-            currentTest = value;
-            OnPropertyChanged(nameof(CurrentTest));
-        }
-    }
+    public ObservableCollection<Question> Questions { get; set; }
 
-    public string TestQuestions { get; set; }
+    public ICommand SubmitTestCommand { get; }
 
-    public TestViewModel(int testId)
+    public TestViewModel(int testId, int userId, int courseId)
     {
         _databaseService = new DatabaseService();
-        _fileService = new FileService();
-        LoadTest(testId);
+        _userId = userId;
+        _courseId = courseId;
+
+        Questions = new ObservableCollection<Question>(
+            _databaseService.GetQuestionsByTestId(testId));
+
+        SubmitTestCommand = new RelayCommand(_ => SubmitTest());
     }
 
-    private void LoadTest(int testId)
+    private void SubmitTest()
     {
-        // Fetch test details from database
-        var test = _databaseService.GetTestById(testId);
-        CurrentTest = test;
+        double totalPoints = 0;
 
-        // Load test questions from file
-        TestQuestions = _fileService.ReadTestQuestions(test.ContentFilePath);
+        foreach (var question in Questions)
+        {
+            foreach (var answer in question.AnswerOptions)
+            {
+                if (answer is SelectableAnswerOption selectable && selectable.IsSelected)
+                {
+                    totalPoints += answer.Points;
+                }
+            }
+        }
+
+        _databaseService.SaveFinalGrade(_userId, _courseId, totalPoints);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged(string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-    }
+    public event PropertyChangedEventHandler? PropertyChanged;
 }

@@ -1,5 +1,4 @@
 using Microsoft.Data.Sqlite;
-using System.IO;
 
 public class DatabaseInitializer
 {
@@ -12,103 +11,128 @@ public class DatabaseInitializer
 
     public void Initialize()
     {
-        var dbPath = GetDatabasePath();
-        var directory = Path.GetDirectoryName(dbPath);
-        if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
-        {
-            Directory.CreateDirectory(directory);
-        }
-
         using var connection = new SqliteConnection(_connectionString);
         connection.Open();
 
-        CreateCoursesTable(connection);
-        CreateEnrollmentsTable(connection);
-        CreateLecturesTable(connection);
-        CreateTestsTable(connection);
-        CreateUsersTable(connection);
+        EnableForeignKeys(connection);
+
+        CreateUsers(connection);
+        CreateCourses(connection);
+        CreateLectures(connection);
+        CreateTests(connection);
+        CreateQuestions(connection);
+        CreateAnswerOptions(connection);
+        CreateEnrollments(connection);
     }
 
-    private string GetDatabasePath()
+    private void EnableForeignKeys(SqliteConnection connection)
     {
-        var parts = _connectionString.Split(';');
-        foreach (var part in parts)
-        {
-            if (part.TrimStart().StartsWith("Data Source=", StringComparison.OrdinalIgnoreCase))
-            {
-                return part.Substring("Data Source=".Length).Trim();
-            }
-        }
-        return "courses.db";
+        using var cmd = new SqliteCommand("PRAGMA foreign_keys = ON;", connection);
+        cmd.ExecuteNonQuery();
     }
 
-    private void CreateCoursesTable(SqliteConnection connection)
+    private void CreateUsers(SqliteConnection connection)
     {
-        var sql = @"
-            CREATE TABLE IF NOT EXISTS Courses (
-                CourseId INTEGER PRIMARY KEY AUTOINCREMENT,
-                CourseName TEXT NOT NULL,
-                TeacherId INTEGER NOT NULL
-            );";
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Users (
+            UserId INTEGER PRIMARY KEY AUTOINCREMENT,
+            Username TEXT NOT NULL UNIQUE,
+            Password TEXT NOT NULL,
+            UserType INTEGER NOT NULL
+        );";
 
-        using var command = new SqliteCommand(sql, connection);
-        command.ExecuteNonQuery();
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
     }
 
-    private void CreateEnrollmentsTable(SqliteConnection connection)
+    private void CreateCourses(SqliteConnection connection)
     {
-        var sql = @"
-            CREATE TABLE IF NOT EXISTS Enrollments (
-                EnrollmentId INTEGER PRIMARY KEY AUTOINCREMENT,
-                UserId INTEGER NOT NULL,
-                CourseId INTEGER NOT NULL,
-                EnrollmentDate TEXT NOT NULL
-            );";
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Courses (
+            CourseId INTEGER PRIMARY KEY AUTOINCREMENT,
+            CourseName TEXT NOT NULL,
+            TeacherId INTEGER NOT NULL,
+            StartDate TEXT,
+            EndDate TEXT,
+            FOREIGN KEY (TeacherId) REFERENCES Users(UserId) ON DELETE CASCADE
+        );";
 
-        using var command = new SqliteCommand(sql, connection);
-        command.ExecuteNonQuery();
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
     }
 
-    private void CreateLecturesTable(SqliteConnection connection)
+    private void CreateLectures(SqliteConnection connection)
     {
-        var sql = @"
-            CREATE TABLE IF NOT EXISTS Lectures (
-                LectureId INTEGER PRIMARY KEY AUTOINCREMENT,
-                Title TEXT NOT NULL,
-                ContentFilePath TEXT NOT NULL
-            );";
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Lectures (
+            LectureId INTEGER PRIMARY KEY AUTOINCREMENT,
+            CourseId INTEGER NOT NULL,
+            Title TEXT NOT NULL,
+            ContentFilePath TEXT NOT NULL,
+            AvailableFrom TEXT,
+            AvailableUntil TEXT,
+            FOREIGN KEY (CourseId) REFERENCES Courses(CourseId) ON DELETE CASCADE
+        );";
 
-        using var command = new SqliteCommand(sql, connection);
-        command.ExecuteNonQuery();
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
     }
 
-    private void CreateTestsTable(SqliteConnection connection)
+    private void CreateTests(SqliteConnection connection)
     {
-        var sql = @"
-            CREATE TABLE IF NOT EXISTS Tests (
-                TestId INTEGER PRIMARY KEY AUTOINCREMENT,
-                TestName TEXT NOT NULL,
-                Title TEXT NOT NULL,
-                ContentFilePath TEXT NOT NULL,
-                AvailableFrom TEXT,
-                AvailableUntil TEXT
-            );";
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Tests (
+            TestId INTEGER PRIMARY KEY AUTOINCREMENT,
+            CourseId INTEGER NOT NULL,
+            TestName TEXT NOT NULL,
+            ContentFilePath TEXT NOT NULL,
+            AvailableFrom TEXT,
+            AvailableUntil TEXT,
+            FOREIGN KEY (CourseId) REFERENCES Courses(CourseId) ON DELETE CASCADE
+        );";
 
-        using var command = new SqliteCommand(sql, connection);
-        command.ExecuteNonQuery();
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
     }
 
-    private void CreateUsersTable(SqliteConnection connection)
+    private void CreateQuestions(SqliteConnection connection)
     {
-        var sql = @"
-            CREATE TABLE IF NOT EXISTS Users (
-                UserId INTEGER PRIMARY KEY AUTOINCREMENT,
-                Username TEXT NOT NULL,
-                Password TEXT NOT NULL,
-                UserType INTEGER NOT NULL
-            );";
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Questions (
+            QuestionId INTEGER PRIMARY KEY AUTOINCREMENT,
+            TestId INTEGER NOT NULL,
+            QuestionText TEXT NOT NULL,
+            FOREIGN KEY (TestId) REFERENCES Tests(TestId) ON DELETE CASCADE
+        );";
 
-        using var command = new SqliteCommand(sql, connection);
-        command.ExecuteNonQuery();
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
+    }
+
+    private void CreateAnswerOptions(SqliteConnection connection)
+    {
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS AnswerOptions (
+            AnswerId INTEGER PRIMARY KEY AUTOINCREMENT,
+            QuestionId INTEGER NOT NULL,
+            AnswerText TEXT NOT NULL,
+            Points INTEGER NOT NULL,
+            FOREIGN KEY (QuestionId) REFERENCES Questions(QuestionId) ON DELETE CASCADE
+        );";
+
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
+    }
+
+    private void CreateEnrollments(SqliteConnection connection)
+    {
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS Enrollments (
+            EnrollmentId INTEGER PRIMARY KEY AUTOINCREMENT,
+            UserId INTEGER NOT NULL,
+            CourseId INTEGER NOT NULL,
+            EnrollmentDate TEXT NOT NULL,
+            IsCompleted INTEGER DEFAULT 0,
+            FinalGrade REAL DEFAULT 0,
+            UNIQUE(UserId, CourseId),
+            FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+            FOREIGN KEY (CourseId) REFERENCES Courses(CourseId) ON DELETE CASCADE
+        );";
+
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
     }
 }

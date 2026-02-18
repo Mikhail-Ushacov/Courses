@@ -45,7 +45,7 @@ public class MainViewModel : INotifyPropertyChanged
         AvailableCourses = new ObservableCollection<Course>(courses);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged(string propertyName = "")
     {

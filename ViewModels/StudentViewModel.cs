@@ -29,7 +29,7 @@ public class StudentViewModel : INotifyPropertyChanged
         EnrolledCourses = new ObservableCollection<Course>(courses);
     }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     protected virtual void OnPropertyChanged(string propertyName = "")
     {
