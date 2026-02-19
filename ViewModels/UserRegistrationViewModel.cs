@@ -82,8 +82,8 @@ namespace Courses.ViewModels
             _registrationWindow = registrationWindow;
             _loginWindow = loginWindow;
             _authService = authService;
-            RegisterCommand = new RelayCommand(_ => Register(), _ => CanRegister());
-            GoBackCommand = new RelayCommand(_ => GoBack());
+            RegisterCommand = new RelayCommand(() => Register(), () => CanRegister());
+            GoBackCommand = new RelayCommand(() => GoBack());
         }
 
         private bool CanRegister()

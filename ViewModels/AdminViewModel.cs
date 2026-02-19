@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using Courses.Models;
 
 namespace Courses
 {
@@ -117,12 +118,12 @@ namespace Courses
                 {
                     UserId = reader.GetInt32(0),
                     Username = reader.GetString(1),
-                    UserType = reader.GetInt32(4)
+                    UserType = (UserType)reader.GetInt32(4)
                 };
 
                 Users.Add(user);
 
-                if (user.UserType == 1)
+                if (user.UserType == UserType.Teacher)
                     Teachers.Add(user);
             }
         }
@@ -143,8 +144,7 @@ namespace Courses
                 Courses.Add(new Course
                 {
                     CourseId = reader.GetInt32(0),
-                    CourseName = reader.GetString(1),
-                    TeacherId = reader.GetInt32(2)
+                    CourseName = reader.GetString(1)
                 });
             }
         }
@@ -152,29 +152,5 @@ namespace Courses
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = "")
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
-    }
-
-    public class User
-    {
-        public int UserId { get; set; }
-        public string Username { get; set; }
-        public int UserType { get; set; }
-    }
-
-    public class Course
-    {
-        public int CourseId { get; set; }
-        public string CourseName { get; set; }
-        public int TeacherId { get; set; }
-    }
-
-    public class RelayCommand : ICommand
-    {
-        private readonly Action execute;
-        public RelayCommand(Action execute) => this.execute = execute;
-
-        public event EventHandler CanExecuteChanged;
-        public bool CanExecute(object parameter) => true;
-        public void Execute(object parameter) => execute();
     }
 }

@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using System.Security.Cryptography;
 using System.Text;
+using Courses.Models;
 
 namespace Courses.Services
 {
@@ -49,17 +50,17 @@ namespace Courses.Services
                 string storedUsername = reader.GetString(1);
                 string storedHash = reader.GetString(2);
                 string storedSalt = reader.GetString(3);
-                UserType userType = (UserType)reader.GetInt32(4);
+                int userType = reader.GetInt32(4);
 
                 if (VerifyPassword(password, storedHash, storedSalt))
                 {
-                    return new User
-                    {
-                        UserId = userId,
-                        Username = storedUsername,
-                        Password = storedHash,
-                        UserType = userType
-                    };
+                        return new User
+                        {
+                            UserId = userId,
+                            Username = storedUsername,
+                            Password = storedHash,
+                            UserType = (UserType)userType
+                        };
                 }
             }
 
@@ -83,13 +84,13 @@ namespace Courses.Services
             }
 
             string salt;
-            string hash = HashPassword(password, out salt);
+            string passwordHash = HashPassword(password, out salt);
 
             var insertCmd = new SqliteCommand(
                 "INSERT INTO Users (Username, Password, Salt, UserType) VALUES (@Username, @Password, @Salt, @UserType)",
                 conn);
             insertCmd.Parameters.AddWithValue("@Username", username);
-            insertCmd.Parameters.AddWithValue("@Password", hash);
+            insertCmd.Parameters.AddWithValue("@Password", passwordHash);
             insertCmd.Parameters.AddWithValue("@Salt", salt);
             insertCmd.Parameters.AddWithValue("@UserType", (int)UserType.Student);
 

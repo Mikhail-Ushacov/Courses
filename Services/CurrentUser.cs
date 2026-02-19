@@ -1,3 +1,5 @@
+using Courses.Models;
+
 namespace Courses.Services
 {
     public static class CurrentUser

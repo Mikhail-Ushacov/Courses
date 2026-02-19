@@ -57,14 +57,16 @@ namespace Courses.ViewModels
         {
             _loginWindow = loginWindow;
             _authService = new AuthService(connectionString);
-            LoginCommand = new RelayCommand(_ => Login(), _ => CanLogin());
-            GoToRegistrationCommand = new RelayCommand(_ => GoToRegistration());
-            GoToTeacherWindowCommand = new RelayCommand(_ => GoToTeacherWindow());
+            LoginCommand = new RelayCommand(() => Login(), () => CanLogin());
+            GoToRegistrationCommand = new RelayCommand(() => GoToRegistration());
+            GoToTeacherWindowCommand = new RelayCommand(() => GoToTeacherWindow());
         }
 
         private void GoToTeacherWindow()
         {
-            AppNavigationService.Navigate(new Courses.TeacherWindow());
+            var teacherWindow = new Courses.TeacherWindow();
+            teacherWindow.Show();
+            _loginWindow.Close();
         }
 
         private bool CanLogin()
@@ -81,20 +83,13 @@ namespace Courses.ViewModels
                 CurrentUser.User = user;
                 ErrorMessage = string.Empty;
 
-                //var mainWindow = new MainWindow();
-                //mainWindow.Show();
-
                 if (CurrentUser.IsTeacher)
                 {
                     GoToTeacherWindow();
                 }
-                //else if (CurrentUser.IsAdmin)
-                //{
-
-                //}
                 else if (CurrentUser.IsStudent)
                 {
-
+                    GoToMainWindow();
                 }
 
                 _loginWindow.Close();
@@ -103,6 +98,12 @@ namespace Courses.ViewModels
             {
                 ErrorMessage = "Невірний логін або пароль";
             }
+        }
+
+        private void GoToMainWindow()
+        {
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
         }
 
         private void GoToRegistration()

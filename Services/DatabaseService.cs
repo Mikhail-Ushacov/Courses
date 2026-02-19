@@ -1,5 +1,6 @@
 using Microsoft.Data.Sqlite;
 using System.IO;
+using Courses.Models;
 
 public class DatabaseService
 {
