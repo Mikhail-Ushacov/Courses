@@ -1,7 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
-public class RegistrationViewModel : INotifyPropertyChanged
+using Courses.Services;
+public class CourseRegistrationViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Course> availableCourses;
     private readonly DatabaseService _databaseService;
@@ -19,7 +20,7 @@ public class RegistrationViewModel : INotifyPropertyChanged
 
     public ICommand RegisterCommand { get; }
 
-    public RegistrationViewModel()
+    public CourseRegistrationViewModel()
     {
         _databaseService = new DatabaseService();
         _registrationService = new RegistrationService();
@@ -37,7 +38,7 @@ public class RegistrationViewModel : INotifyPropertyChanged
     {
         if (parameter is Course course)
         {
-            var isRegistered = _registrationService.RegisterStudentToCourse(1, course.CourseId); // Replace with actual student ID
+            var isRegistered = _registrationService.RegisterStudentToCourse(CurrentUser.User?.UserId ?? 0, course.CourseId); // Replace with actual student ID
             if (isRegistered)
             {
                 // Notify user about successful registration

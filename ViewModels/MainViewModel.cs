@@ -1,11 +1,13 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+using Courses.Services;
 
 public class MainViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Course> availableCourses;
     private readonly DatabaseService _databaseService;
+    private string _welcomeMessage = "Мій Кабінет";
 
     public ObservableCollection<Course> AvailableCourses
     {
@@ -17,26 +19,58 @@ public class MainViewModel : INotifyPropertyChanged
         }
     }
 
-    public ICommand GoToCoursesCommand { get; }
-    public ICommand GoToLoginCommand { get; }
+    public string WelcomeMessage
+    {
+        get { return _welcomeMessage; }
+        set
+        {
+            _welcomeMessage = value;
+            OnPropertyChanged(nameof(WelcomeMessage));
+        }
+    }
+
+    public ICommand GoToMainPageCommand { get; }
+    public ICommand GoToStudentPageCommand { get; }
+    public ICommand GoToTeacherPageCommand { get; }
+    public ICommand GoToRegistrationCommand { get; }
 
     public MainViewModel()
     {
         _databaseService = new DatabaseService();
-        GoToCoursesCommand = new RelayCommand(_ => GoToCourses());
-        GoToLoginCommand = new RelayCommand(_ => GoToLogin());
+
+        GoToMainPageCommand = new RelayCommand(_ => GoToMainPage());
+        GoToStudentPageCommand = new RelayCommand(_ => GoToStudentPage());
+        GoToTeacherPageCommand = new RelayCommand(_ => GoToTeacherPage());
+        GoToRegistrationCommand = new RelayCommand(_ => GoToRegistration());
+
+        if (CurrentUser.User != null)
+        {
+            WelcomeMessage = CurrentUser.IsTeacher 
+                ? $"Викладач: {CurrentUser.User.Username}" 
+                : $"Студент: {CurrentUser.User.Username}";
+        }
 
         LoadCourses();
     }
 
-    private void GoToCourses()
+    private void GoToMainPage()
     {
-        // Logic to navigate to course page
+        AppNavigationService.Navigate(new Courses.Views.MainPage());
     }
 
-    private void GoToLogin()
+    private void GoToStudentPage()
     {
-        // Logic to navigate to login page
+        AppNavigationService.Navigate(new Courses.StudentPage());
+    }
+
+    private void GoToTeacherPage()
+    {
+        AppNavigationService.Navigate(new Courses.TeacherPage());
+    }
+
+    private void GoToRegistration()
+    {
+        AppNavigationService.Navigate(new Courses.CourseRegistrationPage());
     }
 
     private void LoadCourses()

@@ -3,6 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              StartupUri="Views/LoginPage.xaml">
     <Application.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+
         <Style TargetType="Page">
             <Setter Property="Background" Value="#F5F6F7"/>
         </Style>

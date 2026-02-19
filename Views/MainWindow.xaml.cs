@@ -5,14 +5,12 @@ using Courses.Services;
 
 namespace Courses
 {
-    /// <summary>
-    /// Логіка взаємодії для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        private MainViewModel _viewModel;
+
         public MainWindow()
         {
-            // Ініціалізація компонентів XAML
             InitializeComponent();
 
             AppNavigationService.NavigateAction = view =>
@@ -22,12 +20,10 @@ namespace Courses
 
             try
             {
-                // 1. Налаштування бази даних перед запуском інтерфейсу
                 InitializeDatabase();
 
-                // 2. Встановлення контексту даних (ViewModel)
-                // MainViewModel керуватиме логікою перемикання сторінок та даними
-                this.DataContext = new MainViewModel();
+                _viewModel = new MainViewModel();
+                this.DataContext = _viewModel;
             }
             catch (Exception ex)
             {
@@ -41,31 +37,44 @@ namespace Courses
             }
         }
 
-        /// <summary>
-        /// Створює необхідні папки та ініціалізує базу даних SQLite
-        /// </summary>
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (CurrentUser.IsTeacher)
+            {
+                TeacherButton.Visibility = Visibility.Visible;
+                StudentButton.Visibility = Visibility.Visible;
+            }
+            else if (CurrentUser.IsStudent)
+            {
+                TeacherButton.Visibility = Visibility.Collapsed;
+                StudentButton.Visibility = Visibility.Visible;
+            }
+        }
+
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            CurrentUser.Logout();
+            var loginPage = new Views.LoginPage();
+            loginPage.Show();
+            this.Close();
+        }
+
         private void InitializeDatabase()
         {
-            // Визначаємо шлях до папки в LocalApplicationData (зазвичай C:\Users\User\AppData\Local)
             string appDataPath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
             string projectFolder = Path.Combine(appDataPath, "Courses");
 
-            // Перевіряємо, чи існує папка, якщо ні — створюємо
             if (!Directory.Exists(projectFolder))
             {
                 Directory.CreateDirectory(projectFolder);
             }
 
-            // Формуємо шлях до файлу БД
             string dbPath = Path.Combine(projectFolder, "courses.db");
             string connectionString = $"Data Source={dbPath};";
 
-            // Виклик сервісу ініціалізації
-            // DatabaseInitializer має містити SQL-скрипти створення таблиць (Users, Courses, Lectures, etc.)
             var initializer = new DatabaseInitializer(connectionString);
             initializer.Initialize();
 
-            // (Опціонально) Початкове заповнення даними, якщо база порожня
             var contentInitializer = new ContentInitializer(connectionString);
             contentInitializer.SeedInitialData();
         }

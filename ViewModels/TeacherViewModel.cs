@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+using Courses.Services;
+
 public class TeacherViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Course> managedCourses;
@@ -24,7 +26,8 @@ public class TeacherViewModel : INotifyPropertyChanged
 
     private void LoadManagedCourses()
     {
-        var courses = _databaseService.GetCoursesByTeacher(1); // Replace with actual teacher ID
+        var userId = CurrentUser.User?.UserId ?? 0;
+        var courses = _databaseService.GetCoursesByTeacher(userId);
         ManagedCourses = new ObservableCollection<Course>(courses);
     }
 

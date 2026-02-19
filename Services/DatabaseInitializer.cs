@@ -38,6 +38,7 @@ public class DatabaseInitializer
             UserId INTEGER PRIMARY KEY AUTOINCREMENT,
             Username TEXT NOT NULL UNIQUE,
             Password TEXT NOT NULL,
+            Salt TEXT NOT NULL,
             UserType INTEGER NOT NULL
         );";
 

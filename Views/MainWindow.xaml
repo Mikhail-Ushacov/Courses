@@ -5,7 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Освітня Система" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Loaded="Window_Loaded">
 
     <Window.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
@@ -41,22 +42,18 @@
 
         <Border Grid.Column="0" Background="#2C3E50">
             <StackPanel Margin="10">
-                <TextBlock Text="Мій Кабінет" Foreground="White" FontSize="20" FontWeight="Bold" 
+                <TextBlock Text="{Binding WelcomeMessage}" Foreground="White" FontSize="20" FontWeight="Bold" 
                            HorizontalAlignment="Center" Margin="0,20,0,30"/>
 
                 <Button Content="Головна (Мої курси)" 
                         Style="{StaticResource MenuButtonStyle}"
                         Command="{Binding GoToMainPageCommand}"/>
 
-                <Button Content="Запис на курси" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding GoToRegistrationCommand}"/>
-
-                <Button Content="Кабінет Студента" 
+                <Button x:Name="StudentButton" Content="Кабінет Студента" 
                         Style="{StaticResource MenuButtonStyle}"
                         Command="{Binding GoToStudentPageCommand}"/>
 
-                <Button Content="Кабінет Викладача" 
+                <Button x:Name="TeacherButton" Content="Кабінет Викладача" 
                         Style="{StaticResource MenuButtonStyle}"
                         Command="{Binding GoToTeacherPageCommand}"/>
 
@@ -64,7 +61,8 @@
 
                 <Button Content="Вихід" 
                         Style="{StaticResource MenuButtonStyle}"
-                        VerticalAlignment="Bottom"/>
+                        VerticalAlignment="Bottom"
+                        Click="LogoutButton_Click"/>
             </StackPanel>
         </Border>
 

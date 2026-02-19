@@ -1,4 +1,4 @@
-﻿using Microsoft.Data.Sqlite;
+using Microsoft.Data.Sqlite;
 using System;
 
 namespace Courses.Services
@@ -19,11 +19,18 @@ namespace Courses.Services
             using var transaction = connection.BeginTransaction();
             try
             {
-                // Insert Teacher (UserType 1)
-                var cmd1 = new SqliteCommand("INSERT INTO Users (Username, Password, UserType) VALUES ('AdminTeacher', '123', 1)", connection, transaction);
+                string salt;
+                string hash = AuthService.HashPassword("123", out salt);
+
+                var cmd1 = new SqliteCommand(
+                    "INSERT INTO Users (Username, Password, Salt, UserType) VALUES (@Username, @Password, @Salt, @UserType)",
+                    connection, transaction);
+                cmd1.Parameters.AddWithValue("@Username", "AdminTeacher");
+                cmd1.Parameters.AddWithValue("@Password", hash);
+                cmd1.Parameters.AddWithValue("@Salt", salt);
+                cmd1.Parameters.AddWithValue("@UserType", (int)UserType.Teacher);
                 cmd1.ExecuteNonQuery();
 
-                // Insert Course
                 var cmd2 = new SqliteCommand("INSERT INTO Courses (CourseName, TeacherId) VALUES ('C# Programming', 1)", connection, transaction);
                 cmd2.ExecuteNonQuery();
 

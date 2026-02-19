@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
+using Courses.Services;
+
 public class StudentViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Course> enrolledCourses;
@@ -24,8 +26,8 @@ public class StudentViewModel : INotifyPropertyChanged
 
     private void LoadEnrolledCourses()
     {
-        // Fetch enrolled courses for student
-        var courses = _databaseService.GetEnrolledCourses(1); // Replace with actual student ID
+        var userId = CurrentUser.User?.UserId ?? 0;
+        var courses = _databaseService.GetEnrolledCourses(userId);
         EnrolledCourses = new ObservableCollection<Course>(courses);
     }
 
