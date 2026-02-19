@@ -1,5 +1,6 @@
 public enum UserType
 {
     Student,
-    Teacher
+    Teacher,
+    Admin
 }

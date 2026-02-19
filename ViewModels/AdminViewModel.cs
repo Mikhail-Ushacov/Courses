@@ -14,6 +14,7 @@ namespace Courses
 
         public ObservableCollection<User> Users { get; set; } = new();
         public ObservableCollection<User> Teachers { get; set; } = new();
+        public ObservableCollection<User> Admins { get; set; } = new();
         public ObservableCollection<Course> Courses { get; set; } = new();
 
         public User SelectedUser { get; set; }
@@ -125,6 +126,9 @@ namespace Courses
 
                 if (user.UserType == UserType.Teacher)
                     Teachers.Add(user);
+
+                if (user.UserType == UserType.Admin)
+                    Admins.Add(user);
             }
         }
 
