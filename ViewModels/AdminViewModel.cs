@@ -10,7 +10,7 @@ namespace Courses
 {
     public class AdminViewModel : INotifyPropertyChanged
     {
-        private string connectionString = "Data Source=database.db";
+        private readonly string connectionString = new DatabaseService().ConnectionString;
 
         public ObservableCollection<User> Users { get; set; } = new();
         public ObservableCollection<User> Teachers { get; set; } = new();
