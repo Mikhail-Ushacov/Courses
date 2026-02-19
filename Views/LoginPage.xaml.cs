@@ -1,6 +1,7 @@
+using Courses.Services;
+using Courses.ViewModels;
 using System.IO;
 using System.Windows;
-using Courses.ViewModels;
 
 namespace Courses.Views
 {
@@ -28,5 +29,6 @@ namespace Courses.Views
             string dbPath = Path.Combine(projectFolder, "courses.db");
             return $"Data Source={dbPath};";
         }
+
     }
 }

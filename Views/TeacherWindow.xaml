@@ -1,0 +1,71 @@
+﻿<Window x:Class="Courses.TeacherWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Освітня Система" Height="600" Width="1000"
+        WindowStartupLocation="CenterScreen"
+        >
+
+    <Window.Resources>
+        <Style x:Key="MenuButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#3D4E63"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.Column="0" Background="#2C3E50">
+            <StackPanel Margin="10">
+                <TextBlock Text="{Binding WelcomeMessage}" Foreground="White" FontSize="20" FontWeight="Bold" 
+                           HorizontalAlignment="Center" Margin="0,20,0,30"/>
+
+                <Button Content="Мої курси" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Command="{Binding GoToMainPageCommand}"/>
+
+                <Button x:Name="StudentButton" Content="Список Студентів" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        Command="{Binding GoToStudentPageCommand}"/>
+
+                <Separator Background="#3D4E63" Margin="10,20"/>
+
+                <Button Content="Вихід" 
+                        Style="{StaticResource MenuButtonStyle}"
+                        VerticalAlignment="Bottom"
+                        Click="LogoutButton_Click"/>
+            </StackPanel>
+        </Border>
+
+        <Grid Grid.Column="1" Background="#F5F6F7">
+            <Frame x:Name="MainFrame" 
+                   Content="{Binding CurrentPage}" 
+                   NavigationUIVisibility="Hidden"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -51,6 +51,7 @@ namespace Courses.ViewModels
 
         public ICommand LoginCommand { get; }
         public ICommand GoToRegistrationCommand { get; }
+        public ICommand GoToTeacherWindowCommand { get; }
 
         public LoginViewModel(Window loginWindow, string connectionString)
         {
@@ -58,6 +59,12 @@ namespace Courses.ViewModels
             _authService = new AuthService(connectionString);
             LoginCommand = new RelayCommand(_ => Login(), _ => CanLogin());
             GoToRegistrationCommand = new RelayCommand(_ => GoToRegistration());
+            GoToTeacherWindowCommand = new RelayCommand(_ => GoToTeacherWindow());
+        }
+
+        private void GoToTeacherWindow()
+        {
+            AppNavigationService.Navigate(new Courses.TeacherWindow());
         }
 
         private bool CanLogin()
@@ -74,8 +81,22 @@ namespace Courses.ViewModels
                 CurrentUser.User = user;
                 ErrorMessage = string.Empty;
 
-                var mainWindow = new MainWindow();
-                mainWindow.Show();
+                //var mainWindow = new MainWindow();
+                //mainWindow.Show();
+
+                if (CurrentUser.IsTeacher)
+                {
+                    GoToTeacherWindow();
+                }
+                //else if (CurrentUser.IsAdmin)
+                //{
+
+                //}
+                else if (CurrentUser.IsStudent)
+                {
+
+                }
+
                 _loginWindow.Close();
             }
             else

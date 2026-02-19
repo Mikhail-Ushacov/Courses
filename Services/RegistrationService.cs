@@ -18,7 +18,7 @@ public bool RegisterStudentToCourse(int studentId, int courseId) {
     check.Parameters.AddWithValue("@UserId", studentId);
     check.Parameters.AddWithValue("@CourseId", courseId);
 
-    var result = check.ExecuteScalar(); // FIXED: changed from cmd to check
+    var result = check.ExecuteScalar();
     long count = result == null ? 0 : Convert.ToInt64(result);
 
     if (count > 0) return false;
