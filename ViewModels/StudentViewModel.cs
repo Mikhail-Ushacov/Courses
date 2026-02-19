@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Courses.Services;
+using Courses.Models;
 
 public class StudentViewModel : INotifyPropertyChanged
 {

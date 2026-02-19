@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
         Title="Освітня Система" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen"
-        Loaded="Window_Loaded">
+        WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <Style x:Key="MenuButtonStyle" TargetType="Button">
@@ -52,10 +51,6 @@
                 <Button x:Name="StudentButton" Content="Кабінет Студента" 
                         Style="{StaticResource MenuButtonStyle}"
                         Command="{Binding GoToStudentPageCommand}"/>
-
-                <Button x:Name="TeacherButton" Content="Кабінет Викладача" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding GoToTeacherPageCommand}"/>
 
                 <Separator Background="#3D4E63" Margin="10,20"/>
 

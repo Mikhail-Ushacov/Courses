@@ -2,6 +2,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Courses.Services;
+using Courses.Models;
 
 public class MainViewModel : INotifyPropertyChanged
 {
@@ -40,14 +41,10 @@ public class MainViewModel : INotifyPropertyChanged
 
         GoToMainPageCommand = new RelayCommand(_ => GoToMainPage());
         GoToStudentPageCommand = new RelayCommand(_ => GoToStudentPage());
-        GoToTeacherPageCommand = new RelayCommand(_ => GoToTeacherPage());
-        GoToRegistrationCommand = new RelayCommand(_ => GoToRegistration());
 
         if (CurrentUser.User != null)
         {
-            WelcomeMessage = CurrentUser.IsTeacher 
-                ? $"Викладач: {CurrentUser.User.Username}" 
-                : $"Студент: {CurrentUser.User.Username}";
+            WelcomeMessage = $"Студент: {CurrentUser.User.Username}";
         }
 
         LoadCourses();
@@ -63,15 +60,6 @@ public class MainViewModel : INotifyPropertyChanged
         AppNavigationService.Navigate(new Courses.StudentPage());
     }
 
-    private void GoToTeacherPage()
-    {
-        AppNavigationService.Navigate(new Courses.TeacherPage());
-    }
-
-    private void GoToRegistration()
-    {
-        AppNavigationService.Navigate(new Courses.CourseRegistrationPage());
-    }
 
     private void LoadCourses()
     {

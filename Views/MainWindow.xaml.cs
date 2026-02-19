@@ -37,20 +37,6 @@ namespace Courses
             }
         }
 
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            if (CurrentUser.IsTeacher)
-            {
-                TeacherButton.Visibility = Visibility.Visible;
-                StudentButton.Visibility = Visibility.Visible;
-            }
-            else if (CurrentUser.IsStudent)
-            {
-                TeacherButton.Visibility = Visibility.Collapsed;
-                StudentButton.Visibility = Visibility.Visible;
-            }
-        }
-
         private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
             CurrentUser.Logout();

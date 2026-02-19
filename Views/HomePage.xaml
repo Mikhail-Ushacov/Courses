@@ -1,0 +1,56 @@
+<Page x:Class="Courses.Views.MainPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="Головна">
+
+    <Grid>
+        <StackPanel>
+            <TextBlock Text="Мої курси"
+                       FontSize="24"
+                       FontWeight="Bold"
+                       Margin="20"/>
+
+            <ItemsControl ItemsSource="{Binding AvailableCourses}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Gray"
+                                BorderThickness="1"
+                                Margin="10"
+                                Padding="10">
+
+                            <StackPanel>
+
+                                <TextBlock Text="{Binding CourseName}"
+                                           FontSize="18"
+                                           FontWeight="Bold"/>
+
+                                <TextBlock Text="Оцінка:"
+                                           Margin="0,5,0,0"/>
+
+                                <TextBlock Text="{Binding FinalTest}"
+                                           FontSize="16"
+                                           Foreground="DarkGreen"/>
+
+                                <TextBlock Text="Доступні тести:"
+                                           Margin="0,10,0,0"
+                                           FontWeight="Bold"/>
+
+                                <ItemsControl ItemsSource="{Binding Test}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding TestName}"
+                                                       Margin="10,2"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                            </StackPanel>
+
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </StackPanel>
+    </Grid>
+</Page>

@@ -3,11 +3,25 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       Title="Student Page">
     <Grid>
-        <ListView ItemsSource="{Binding EnrolledCourses}">
+        <ListView ItemsSource="{Binding EnrolledCourses}"
+          SelectedItem="{Binding SelectedCourse, Mode=TwoWay}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Course Name" DisplayMemberBinding="{Binding CourseName}" />
-                    <GridViewColumn Header="Grade" DisplayMemberBinding="{Binding FinalGrade}" />
+                    <GridViewColumn Header="Course Name">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Button Content="{Binding CourseName}"
+                                Click="CourseButton_Click"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="Blue"
+                                Cursor="Hand"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
+                    <GridViewColumn Header="Grade"
+                            DisplayMemberBinding="{Binding FinalGrade}" />
                 </GridView>
             </ListView.View>
         </ListView>

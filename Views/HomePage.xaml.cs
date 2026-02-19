@@ -1,3 +1,5 @@
+using Courses.ViewModels;
+using System;
 using System.Windows.Controls;
 
 namespace Courses.Views
@@ -7,6 +9,7 @@ namespace Courses.Views
         public MainPage()
         {
             InitializeComponent();
+            DataContext = new HomeViewModel();
         }
     }
 }

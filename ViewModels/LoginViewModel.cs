@@ -73,8 +73,8 @@ namespace Courses.ViewModels
 
         private void GoToAdminWindow()
         {
-            var teacherWindow = new Courses.AdminWindow();
-            teacherWindow.Show();
+            var adminWindow = new Courses.AdminWindow();
+            adminWindow.Show();
             _loginWindow.Close();
         }
 
@@ -96,10 +96,12 @@ namespace Courses.ViewModels
                 {
                     GoToTeacherWindow();
                 }
+
                 if (CurrentUser.IsAdmin)
                 {
                     GoToAdminWindow();
                 }
+
                 else if (CurrentUser.IsStudent)
                 {
                     GoToMainWindow();

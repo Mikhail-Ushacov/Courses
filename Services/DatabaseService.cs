@@ -283,7 +283,7 @@ public List<Test> GetTestsByCourseId(int courseId)
     conn.Open();
 
     var cmd = new SqliteCommand(@"
-        SELECT TestId, TestName, Title, ContentFilePath, AvailableFrom, AvailableUntil
+        SELECT TestId, CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil
         FROM Tests WHERE CourseId = @CourseId", conn);
 
     cmd.Parameters.AddWithValue("@CourseId", courseId);
@@ -366,4 +366,24 @@ public void DeleteCourse(int courseId)
     command.Parameters.AddWithValue("@id", courseId);
     command.ExecuteNonQuery();
 }
+
+    public double? GetFinalGrade(int userId, int courseId)
+    {
+        using var conn = new SqliteConnection(ConnectionString);
+        conn.Open();
+
+        var cmd = new SqliteCommand(@"
+        SELECT FinalGrade FROM Enrollments
+        WHERE UserId = @UserId AND CourseId = @CourseId", conn);
+
+        cmd.Parameters.AddWithValue("@UserId", userId);
+        cmd.Parameters.AddWithValue("@CourseId", courseId);
+
+        var result = cmd.ExecuteScalar();
+
+        if (result == null || result == DBNull.Value)
+            return null;
+
+        return Convert.ToDouble(result);
+    }
 }
