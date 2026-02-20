@@ -47,11 +47,11 @@
 
                 <Button Content="Мої курси" 
                         Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding GoToMainPageCommand}"/>
+                        Command="{Binding GoToTeacherPageCommand}"/>
 
                 <Button x:Name="StudentButton" Content="Список Студентів" 
                         Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding GoToStudentPageCommand}"/>
+                        Command="{Binding GoToStudentListPageCommand}"/>
 
                 <Separator Background="#3D4E63" Margin="10,20"/>
 

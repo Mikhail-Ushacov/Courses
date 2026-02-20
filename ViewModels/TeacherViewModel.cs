@@ -1,51 +1,9 @@
-//using System.Collections.ObjectModel;
-//using System.ComponentModel;
-//using System.Windows.Input;
-//using Courses.Services;
-
-//public class TeacherViewModel : INotifyPropertyChanged
-//{
-//    private ObservableCollection<Course> managedCourses;
-//    private readonly DatabaseService _databaseService;
-
-//    public ObservableCollection<Course> ManagedCourses
-//    {
-//        get { return managedCourses; }
-//        set
-//        {
-//            managedCourses = value;
-//            OnPropertyChanged(nameof(ManagedCourses));
-//        }
-//    }
-
-//    public TeacherViewModel()
-//    {
-//        _databaseService = new DatabaseService();
-//        LoadManagedCourses();
-//    }
-
-//    private void LoadManagedCourses()
-//    {
-//        var userId = CurrentUser.User?.UserId ?? 0;
-//        var courses = _databaseService.GetCoursesByTeacher(userId);
-//        ManagedCourses = new ObservableCollection<Course>(courses);
-//    }
-
-//    public event PropertyChangedEventHandler? PropertyChanged;
-
-//    protected virtual void OnPropertyChanged(string propertyName = "")
-//    {
-//        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-//    }
-//}
-
-
-
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
 using Courses.Services;
 using Courses.Models;
+using Courses.Views;
 
 public class TeacherViewModel : INotifyPropertyChanged
 {
@@ -73,48 +31,33 @@ public class TeacherViewModel : INotifyPropertyChanged
         }
     }
 
-    public ICommand GoToMainPageCommand { get; }
-    public ICommand GoToStudentPageCommand { get; }
     public ICommand GoToTeacherPageCommand { get; }
-    public ICommand GoToRegistrationCommand { get; }
+    public ICommand GoToStudentListPageCommand { get; }
 
     public TeacherViewModel()
     {
         _databaseService = new DatabaseService();
 
-        GoToMainPageCommand = new RelayCommand(_ => GoToMainPage());
-        GoToStudentPageCommand = new RelayCommand(_ => GoToStudentPage());
         GoToTeacherPageCommand = new RelayCommand(_ => GoToTeacherPage());
-        GoToRegistrationCommand = new RelayCommand(_ => GoToRegistration());
+        GoToStudentListPageCommand = new RelayCommand(_ => GoToStudentListPage());
 
         if (CurrentUser.User != null)
         {
-            WelcomeMessage = CurrentUser.IsTeacher
-                ? $"Викладач: {CurrentUser.User.Username}"
-                : $"Студент: {CurrentUser.User.Username}";
+            WelcomeMessage = $"Студент: {CurrentUser.User.Username}";
         }
 
         LoadCourses();
     }
 
-    private void GoToMainPage()
-    {
-        AppNavigationService.Navigate(new Courses.Views.MainPage());
-    }
-
-    private void GoToStudentPage()
-    {
-        AppNavigationService.Navigate(new Courses.StudentPage());
-    }
 
     private void GoToTeacherPage()
     {
         AppNavigationService.Navigate(new Courses.TeacherPage());
     }
 
-    private void GoToRegistration()
+    private void GoToStudentListPage()
     {
-        AppNavigationService.Navigate(new Courses.CourseRegistrationPage());
+        AppNavigationService.Navigate(new Courses.StudentListPage());
     }
 
     private void LoadCourses()
