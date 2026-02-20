@@ -32,8 +32,6 @@ public class MainViewModel : INotifyPropertyChanged
 
     public ICommand GoToMainPageCommand { get; }
     public ICommand GoToStudentPageCommand { get; }
-    public ICommand GoToTeacherPageCommand { get; }
-    public ICommand GoToRegistrationCommand { get; }
 
     public MainViewModel()
     {
