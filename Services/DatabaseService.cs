@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Data.Sqlite;
 using System.IO;
 using Courses.Models;
@@ -267,8 +268,8 @@ public List<Lecture> GetLecturesByCourseId(int courseId)
             CourseId = courseId,
             Title = reader.GetString(1),
             ContentFilePath = reader.GetString(2),
-            AvailableFrom = reader.IsDBNull(3) ? null : DateTime.Parse(reader.GetString(3)),
-            AvailableUntil = reader.IsDBNull(4) ? null : DateTime.Parse(reader.GetString(4))
+            AvailableFrom = reader.IsDBNull(3) ? null : DateTimeOffset.Parse(reader.GetString(3), CultureInfo.InvariantCulture),
+            AvailableUntil = reader.IsDBNull(4) ? null : DateTimeOffset.Parse(reader.GetString(4), CultureInfo.InvariantCulture)
         });
     }
 
@@ -298,8 +299,8 @@ public List<Test> GetTestsByCourseId(int courseId)
             CourseId = courseId,
             TestName = reader.GetString(2),
             ContentFilePath = reader.GetString(3),
-            AvailableFrom = reader.IsDBNull(4) ? null : DateTime.Parse(reader.GetString(4)),
-            AvailableUntil = reader.IsDBNull(5) ? null : DateTime.Parse(reader.GetString(5))
+            AvailableFrom = reader.IsDBNull(4) ? null : DateTimeOffset.Parse(reader.GetString(4), CultureInfo.InvariantCulture),
+            AvailableUntil = reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture)
         });
     }
 

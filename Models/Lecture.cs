@@ -1,5 +1,3 @@
-using System;
-
 public class Lecture
 {
     public int LectureId { get; set; }
@@ -7,6 +5,6 @@ public class Lecture
     public string Title { get; set; } = string.Empty;
     public string ContentFilePath { get; set; } = string.Empty;
 
-    public DateTime? AvailableFrom { get; set; }
-    public DateTime? AvailableUntil { get; set; }
+    public DateTimeOffset? AvailableFrom { get; set; }
+    public DateTimeOffset? AvailableUntil { get; set; }
 }

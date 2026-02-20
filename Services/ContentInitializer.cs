@@ -58,19 +58,19 @@ namespace Courses.Services
                 var lecture3Path = Path.Combine(lecturesPath, "lecture3.xml");
 
                 var cmd3 = new SqliteCommand(
-                    "INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Лекція 1: Вступ до штучного інтелекту', @path, '2026-02-01', '2026-03-01')",
+                    "INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Лекція 1: Вступ до штучного інтелекту', @path, '2026-02-01T00:00:00Z', '2026-03-01T23:59:59Z')",
                     connection, transaction);
                 cmd3.Parameters.AddWithValue("@path", lecture1Path);
                 cmd3.ExecuteNonQuery();
 
                 var cmd4 = new SqliteCommand(
-                    "INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Лекція 2: Машинне навчання', @path, '2026-02-10', '2026-03-10')",
+                    "INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Лекція 2: Машинне навчання', @path, '2026-02-10T00:00:00Z', '2026-03-10T23:59:59Z')",
                     connection, transaction);
                 cmd4.Parameters.AddWithValue("@path", lecture2Path);
                 cmd4.ExecuteNonQuery();
 
                 var cmd5 = new SqliteCommand(
-                    "INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Лекція 3: Нейронні мережі та глибоке навчання', @path, '2026-02-15', '2026-03-15')",
+                    "INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Лекція 3: Нейронні мережі та глибоке навчання', @path, '2026-02-15T00:00:00Z', '2026-03-15T23:59:59Z')",
                     connection, transaction);
                 cmd5.Parameters.AddWithValue("@path", lecture3Path);
                 cmd5.ExecuteNonQuery();
@@ -80,19 +80,19 @@ namespace Courses.Services
                 var test3Path = Path.Combine(testsPath, "test_lecture3.xml");
 
                 var cmdTest1 = new SqliteCommand(
-                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 1', @path, '2026-02-01', '2026-03-01')",
+                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 1', @path, '2026-02-01T00:00:00Z', '2026-03-01T23:59:59Z')",
                     connection, transaction);
                 cmdTest1.Parameters.AddWithValue("@path", test1Path);
                 cmdTest1.ExecuteNonQuery();
 
                 var cmdTest2 = new SqliteCommand(
-                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 2', @path, '2026-02-10', '2026-03-10')",
+                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 2', @path, '2026-02-10T00:00:00Z', '2026-03-10T23:59:59Z')",
                     connection, transaction);
                 cmdTest2.Parameters.AddWithValue("@path", test2Path);
                 cmdTest2.ExecuteNonQuery();
 
                 var cmdTest3 = new SqliteCommand(
-                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 3', @path, '2026-02-15', '2026-03-15')",
+                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 3', @path, '2026-02-15T00:00:00Z', '2026-03-15T23:59:59Z')",
                     connection, transaction);
                 cmdTest3.Parameters.AddWithValue("@path", test3Path);
                 cmdTest3.ExecuteNonQuery();
@@ -109,7 +109,7 @@ namespace Courses.Services
                 cmd6.ExecuteNonQuery();
 
                 var cmd7 = new SqliteCommand(
-                    "INSERT INTO Enrollments (UserId, CourseId, EnrollmentDate) VALUES (2, 1, '2026-02-01')",
+                    "INSERT INTO Enrollments (UserId, CourseId, EnrollmentDate) VALUES (2, 1, '2026-02-01T00:00:00Z')",
                     connection, transaction);
                 cmd7.ExecuteNonQuery();
 

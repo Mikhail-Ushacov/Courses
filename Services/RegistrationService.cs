@@ -27,7 +27,7 @@ public bool RegisterStudentToCourse(int studentId, int courseId) {
         "INSERT INTO Enrollments (UserId, CourseId, EnrollmentDate) VALUES (@UserId, @CourseId, @Date)", conn);
     command.Parameters.AddWithValue("@UserId", studentId);
     command.Parameters.AddWithValue("@CourseId", courseId);
-    command.Parameters.AddWithValue("@Date", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+    command.Parameters.AddWithValue("@Date", DateTimeOffset.UtcNow.ToString("o"));
 
     return command.ExecuteNonQuery() > 0;
 }

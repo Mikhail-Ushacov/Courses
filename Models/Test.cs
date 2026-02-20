@@ -1,5 +1,3 @@
-using System;
-
 public class Test
 {
     public int TestId { get; set; }
@@ -11,8 +9,8 @@ public class Test
 
     public string ContentFilePath { get; set; } = string.Empty;
 
-    public DateTime? AvailableFrom { get; set; }
-    public DateTime? AvailableUntil { get; set; }
+    public DateTimeOffset? AvailableFrom { get; set; }
+    public DateTimeOffset? AvailableUntil { get; set; }
 
     public bool IsFinalTest { get; set; }
 }

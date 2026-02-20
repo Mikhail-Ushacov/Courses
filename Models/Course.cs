@@ -7,8 +7,8 @@ namespace Courses.Models
         public int CourseId { get; set; }
         public string CourseName { get; set; }
         public Teacher Instructor { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset? EndDate { get; set; }
         public List<Lecture> Lectures { get; set; }
         public Test FinalTest { get; set; }
         public double? FinalGrade { get; set; }

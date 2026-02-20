@@ -1,10 +1,8 @@
-using System;
-
 public class AccessControlService
 {
-    public bool IsAvailableNow(DateTime? from, DateTime? until)
+    public bool IsAvailableNow(DateTimeOffset? from, DateTimeOffset? until)
     {
-        var now = DateTime.Now;
+        var now = DateTimeOffset.UtcNow;
 
         if (from.HasValue && now < from.Value)
             return false;
@@ -15,7 +13,7 @@ public class AccessControlService
         return true;
     }
 
-    public bool IsCourseAvailable(DateTime? start, DateTime? end)
+    public bool IsCourseAvailable(DateTimeOffset? start, DateTimeOffset? end)
     {
         return IsAvailableNow(start, end);
     }
