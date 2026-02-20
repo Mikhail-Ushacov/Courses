@@ -49,7 +49,7 @@ public class DatabaseService
         {
             conn.Open();
             var command = new SqliteCommand(
-                "SELECT c.CourseId, c.CourseName FROM Courses c INNER JOIN Enrollments e ON c.CourseId = e.CourseId WHERE e.UserId = @UserId", conn);
+                "SELECT c.CourseId, c.CourseName, e.FinalGrade FROM Courses c INNER JOIN Enrollments e ON c.CourseId = e.CourseId WHERE e.UserId = @UserId", conn);
             command.Parameters.AddWithValue("@UserId", studentId);
             var reader = command.ExecuteReader();
 
@@ -59,7 +59,8 @@ public class DatabaseService
                 courses.Add(new Course 
                 { 
                     CourseId = reader.GetInt32(0), 
-                    CourseName = reader.GetString(1) 
+                    CourseName = reader.GetString(1),
+                    FinalGrade = reader.IsDBNull(2) ? null : reader.GetDouble(2)
                 });
             }
             return courses;
@@ -136,7 +137,7 @@ public class DatabaseService
         using (var conn = new SqliteConnection(connectionString))
         {
             conn.Open();
-            var command = new SqliteCommand("SELECT TestId, TestName, Title, ContentFilePath FROM Tests WHERE TestId = @TestId", conn);
+            var command = new SqliteCommand("SELECT TestId, TestName, ContentFilePath FROM Tests WHERE TestId = @TestId", conn);
             command.Parameters.AddWithValue("@TestId", testId);
             var reader = command.ExecuteReader();
 
@@ -146,8 +147,7 @@ public class DatabaseService
                 { 
                     TestId = reader.GetInt32(0), 
                     TestName = reader.GetString(1),
-                    Title = reader.GetString(2),
-                    ContentFilePath = reader.GetString(3)
+                    ContentFilePath = reader.GetString(2)
                 };
             }
             return null;
@@ -296,8 +296,7 @@ public List<Test> GetTestsByCourseId(int courseId)
         {
             TestId = reader.GetInt32(0),
             CourseId = courseId,
-            TestName = reader.GetString(1),
-            Title = reader.GetString(2),
+            TestName = reader.GetString(2),
             ContentFilePath = reader.GetString(3),
             AvailableFrom = reader.IsDBNull(4) ? null : DateTime.Parse(reader.GetString(4)),
             AvailableUntil = reader.IsDBNull(5) ? null : DateTime.Parse(reader.GetString(5))

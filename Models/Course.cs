@@ -11,5 +11,6 @@ namespace Courses.Models
         public DateTime EndDate { get; set; }
         public List<Lecture> Lectures { get; set; }
         public Test FinalTest { get; set; }
+        public double? FinalGrade { get; set; }
     }
 }
