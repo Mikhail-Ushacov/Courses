@@ -1,4 +1,4 @@
-﻿using Courses.Models;
+using Courses.Models;
 using Courses.Views;
 using Courses.Services;
 using System;
@@ -28,6 +28,23 @@ namespace Courses
             Tests = _databaseService.GetTestsByCourseId(courseId);
 
             DataContext = this;
+        }
+
+        private void LectureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Lecture selectedLecture)
+            {
+                NavigationService?.Navigate(new LecturePage(selectedLecture.LectureId));
+            }
+        }
+
+        private void TestButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button button && button.DataContext is Test selectedTest)
+            {
+                var userId = CurrentUser.User?.UserId ?? 0;
+                NavigationService?.Navigate(new TestPage(selectedTest.TestId, userId, CurrentCourse.CourseId));
+            }
         }
     }
 }

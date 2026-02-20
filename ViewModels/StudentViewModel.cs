@@ -7,6 +7,7 @@ using Courses.Models;
 public class StudentViewModel : INotifyPropertyChanged
 {
     private ObservableCollection<Course> enrolledCourses;
+    private Course? selectedCourse;
     private readonly DatabaseService _databaseService;
 
     public ObservableCollection<Course> EnrolledCourses
@@ -16,6 +17,16 @@ public class StudentViewModel : INotifyPropertyChanged
         {
             enrolledCourses = value;
             OnPropertyChanged(nameof(EnrolledCourses));
+        }
+    }
+
+    public Course? SelectedCourse
+    {
+        get { return selectedCourse; }
+        set
+        {
+            selectedCourse = value;
+            OnPropertyChanged(nameof(SelectedCourse));
         }
     }
 

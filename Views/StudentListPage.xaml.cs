@@ -1,4 +1,4 @@
-﻿using System.Windows.Controls;
+using System.Windows.Controls;
 using Courses;
 using Courses.Services;
 using Courses.Views;
@@ -9,7 +9,7 @@ namespace Courses
     
     public partial class StudentListPage : Page
     {
-        public StudentListPage()
+        public StudentListPage(int courseId = 0)
         {
             InitializeComponent();
             DataContext = new StudentListViewModel(courseId);

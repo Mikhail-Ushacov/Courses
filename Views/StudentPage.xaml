@@ -1,13 +1,20 @@
 <Page x:Class="Courses.StudentPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="Student Page">
+      Title="Сторінка студента">
     <Grid>
-        <ListView ItemsSource="{Binding EnrolledCourses}"
-          SelectedItem="{Binding SelectedCourse, Mode=TwoWay}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Text="Мої курси" FontSize="18" FontWeight="Bold" Margin="5"/>
+
+        <ListView Grid.Row="1" ItemsSource="{Binding EnrolledCourses}"
+                  SelectedItem="{Binding SelectedCourse, Mode=TwoWay}" Margin="5">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Course Name">
+                    <GridViewColumn Header="Назва курсу">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
                                 <Button Content="{Binding CourseName}"
@@ -20,7 +27,7 @@
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
 
-                    <GridViewColumn Header="Grade"
+                    <GridViewColumn Header="Оцінка"
                             DisplayMemberBinding="{Binding FinalGrade}" />
                 </GridView>
             </ListView.View>

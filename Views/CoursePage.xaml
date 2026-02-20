@@ -1,28 +1,50 @@
 <Page x:Class="Courses.CoursePage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="Course Page">
+      Title="Сторінка курсу">
     <Grid>
         <TabControl>
-            <TabItem Header="Lectures">
-                <ListView ItemsSource="{Binding CurrentCourse.Lectures}">
+            <TabItem Header="Лекції">
+                <ListView ItemsSource="{Binding Lectures}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Title}" />
-                            <GridViewColumn Header="Available From" DisplayMemberBinding="{Binding AvailableFrom}" />
-                            <GridViewColumn Header="Available Until" DisplayMemberBinding="{Binding AvailableUntil}" />
+                            <GridViewColumn Header="Назва">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding Title}"
+                                                Click="LectureButton_Click"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Foreground="Blue"
+                                                Cursor="Hand"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Доступна з" DisplayMemberBinding="{Binding AvailableFrom}" />
+                            <GridViewColumn Header="Доступна до" DisplayMemberBinding="{Binding AvailableUntil}" />
                         </GridView>
                     </ListView.View>
                 </ListView>
             </TabItem>
 
-            <TabItem Header="Tests">
-                <ListView ItemsSource="{Binding CurrentCourse.Tests}">
+            <TabItem Header="Тести">
+                <ListView ItemsSource="{Binding Tests}">
                     <ListView.View>
                         <GridView>
-                            <GridViewColumn Header="Test Name" DisplayMemberBinding="{Binding TestName}" />
-                            <GridViewColumn Header="Available From" DisplayMemberBinding="{Binding AvailableFrom}" />
-                            <GridViewColumn Header="Available Until" DisplayMemberBinding="{Binding AvailableUntil}" />
+                            <GridViewColumn Header="Назва тесту">
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding TestName}"
+                                                Click="TestButton_Click"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Foreground="Blue"
+                                                Cursor="Hand"/>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn Header="Доступний з" DisplayMemberBinding="{Binding AvailableFrom}" />
+                            <GridViewColumn Header="Доступний до" DisplayMemberBinding="{Binding AvailableUntil}" />
                         </GridView>
                     </ListView.View>
                 </ListView>
