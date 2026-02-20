@@ -2,6 +2,7 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
 using Courses.Services;
+using Wpf.Ui.Controls;
 
 namespace Courses.ViewModels
 {
@@ -13,8 +14,8 @@ namespace Courses.ViewModels
         private string _errorMessage = string.Empty;
         private string _successMessage = string.Empty;
         private readonly AuthService _authService;
-        private readonly Window _registrationWindow;
-        private readonly Window _loginWindow;
+        private readonly FluentWindow _registrationWindow;
+        private readonly FluentWindow _loginWindow;
 
         public string Username
         {
@@ -77,7 +78,7 @@ namespace Courses.ViewModels
         public ICommand RegisterCommand { get; }
         public ICommand GoBackCommand { get; }
 
-        public RegistrationViewModel(Window registrationWindow, Window loginWindow, AuthService authService)
+        public RegistrationViewModel(FluentWindow registrationWindow, FluentWindow loginWindow, AuthService authService)
         {
             _registrationWindow = registrationWindow;
             _loginWindow = loginWindow;
