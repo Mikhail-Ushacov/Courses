@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test lecture="2">
+    <title>Тест до лекції 2: Машинне навчання</title>
+
+    <question id="1" type="single">
+        <text>Що таке машинне навчання?</text>
+        <options>
+            <option correct="true">Метод навчання систем на основі даних</option>
+            <option correct="false">Створення комп'ютерної мережі</option>
+            <option correct="false">Процес встановлення програм</option>
+            <option correct="false">Тип операційної системи</option>
+        </options>
+    </question>
+
+    <question id="2" type="single">
+        <text>Який тип навчання використовує марковані дані?</text>
+        <options>
+            <option correct="true">Навчання з учителем</option>
+            <option correct="false">Навчання без учителя</option>
+            <option correct="false">Підкріплювальне навчання</option>
+            <option correct="false">Глибоке навчання</option>
+        </options>
+    </question>
+
+    <question id="3" type="single">
+        <text>Від чого залежить вибір алгоритму?</text>
+        <options>
+            <option correct="false">Від кольору інтерфейсу</option>
+            <option correct="true">Від типу задачі та обсягу даних</option>
+            <option correct="false">Від назви програми</option>
+            <option correct="false">Від версії браузера</option>
+        </options>
+    </question>
+</test>

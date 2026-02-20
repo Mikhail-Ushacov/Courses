@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test lecture="1">
+    <title>Тест до лекції 1: Вступ до штучного інтелекту</title>
+
+    <question id="1" type="single">
+        <text>Що є основною метою штучного інтелекту?</text>
+        <options>
+            <option correct="false">Створення комп'ютерних ігор</option>
+            <option correct="true">Створення систем, здатних навчатися та приймати рішення</option>
+            <option correct="false">Розробка операційних систем</option>
+            <option correct="ільшення швидкості інтерfalse">Збнету</option>
+        </options>
+    </question>
+
+    <question id="2" type="single">
+        <text>У якій галузі застосовується ШІ?</text>
+        <options>
+            <option correct="false">Тільки в програмуванні</option>
+            <option correct="true">Медицина</option>
+            <option correct="false">Лише в ігровій індустрії</option>
+            <option correct="false">Тільки у військовій сфері</option>
+        </options>
+    </question>
+
+    <question id="3" type="single">
+        <text>Що сприяло розвитку ШІ у XXI столітті?</text>
+        <options>
+            <option correct="false">Зменшення кількості комп'ютерів</option>
+            <option correct="false">Відмова від алгоритмів</option>
+            <option correct="true">Розвиток великих даних та обчислювальних потужностей</option>
+            <option correct="false">Скасування програмування</option>
+        </options>
+    </question>
+</test>

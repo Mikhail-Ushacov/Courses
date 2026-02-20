@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<test lecture="3">
+    <title>Тест до лекції 3: Нейронні мережі</title>
+
+    <question id="1" type="single">
+        <text>З яких шарів складається нейронна мережа?</text>
+        <options>
+            <option correct="false">Тільки з одного шару</option>
+            <option correct="true">Вхідний, прихований та вихідний шари</option>
+            <option correct="false">Тільки вихідний шар</option>
+            <option correct="false">Шар даних і шар пам'яті</option>
+        </options>
+    </question>
+
+    <question id="2" type="single">
+        <text>Що таке глибоке навчання?</text>
+        <options>
+            <option correct="false">Навчання без використання комп'ютера</option>
+            <option correct="true">Навчання багатошарових нейронних мереж</option>
+            <option correct="false">Ручне програмування алгоритмів</option>
+            <option correct="false">Тип антивірусного програмного забезпечення</option>
+        </options>
+    </question>
+
+    <question id="3" type="single">
+        <text>Яка проблема виникає при використанні глибокого навчання?</text>
+        <options>
+            <option correct="false">Відсутність даних</option>
+            <option correct="true">Потреба у значних обчислювальних ресурсах</option>
+            <option correct="false">Неможливість зберігати інформацію</option>
+            <option correct="false">Низька швидкість інтернету</option>
+        </options>
+    </question>
+</test>
