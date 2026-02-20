@@ -1,3 +1,6 @@
+using Courses.Models;
+using Courses.Services;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace Courses
@@ -8,6 +11,14 @@ namespace Courses
         {
             InitializeComponent();
             DataContext = new TeacherViewModel();
+        }
+
+        private void CourseCard_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is FrameworkElement element && element.DataContext is Course course)
+            {
+                AppNavigationService.Navigate(new StudentListPage(course.CourseId));
+            }
         }
     }
 }

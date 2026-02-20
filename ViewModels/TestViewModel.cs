@@ -130,12 +130,12 @@ public class TestViewModel : INotifyPropertyChanged
                     totalPoints += answer.Points;
                     if (answer.Points > 0)
                         totalCorrect++;
-                    GoToStudentPage();
                 }
             }
         }
 
         _databaseService.SaveFinalGrade(_userId, _courseId, totalPoints);
+        GoToStudentPage();
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,85 +1,103 @@
-﻿<Window x:Class="Courses.AdminWindow"
+<ui:FluentWindow x:Class="Courses.AdminWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Admin Panel" Height="600" Width="1000"
-        WindowStartupLocation="CenterScreen">
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        mc:Ignorable="d"
+        Title="Панель Адміністратора"
+        Height="650" Width="1100"
+        WindowStartupLocation="CenterScreen"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Mica">
 
-    <Grid Margin="10">
-        <TabControl>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- USERS TAB -->
-            <TabItem Header="Users">
+        <ui:TitleBar Grid.Row="0" Title="Панель Адміністратора"/>
+
+        <TabControl Grid.Row="1" Margin="16">
+            <TabItem Header="Користувачі">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
-                        <TextBox Width="150" Margin="5"
-                                 Text="{Binding NewUsername}" 
-                                 />
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:TextBox Width="180" Margin="8,0"
+                                    PlaceholderText="Логін"
+                                    Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}"/>
                         <PasswordBox x:Name="PasswordBox"
-                                     Width="150" Margin="5"/>
-                        <ComboBox Width="120" Margin="5"
+                                     Width="180" Margin="8,0"
+                                     Style="{DynamicResource DefaultPasswordBoxStyle}"/>
+                        <ComboBox Width="140" Margin="8,0"
                                   SelectedItem="{Binding NewUserType}">
-                            <ComboBoxItem Content="Student" Tag="0"/>
-                            <ComboBoxItem Content="Teacher" Tag="1"/>
-                            <ComboBoxItem Content="Admin" Tag="2"/>
+                            <ComboBoxItem Content="Студент" Tag="0"/>
+                            <ComboBoxItem Content="Викладач" Tag="1"/>
+                            <ComboBoxItem Content="Адмін" Tag="2"/>
                         </ComboBox>
-                        <Button Content="Add User" Width="100" Margin="5"
-                                Click="AddUser_Click"/>
-                        <Button Content="Delete User" Width="100" Margin="5"
-                                Command="{Binding DeleteUserCommand}"/>
+                        <ui:Button Content="Додати" Width="100" Margin="8,0"
+                                   Appearance="Primary"
+                                   Click="AddUser_Click"/>
+                        <ui:Button Content="Видалити" Width="100" Margin="8,0"
+                                   Appearance="Danger"
+                                   Command="{Binding DeleteUserCommand}"/>
                     </StackPanel>
 
                     <DataGrid Grid.Row="1"
                               ItemsSource="{Binding Users}"
                               SelectedItem="{Binding SelectedUser}"
-                              AutoGenerateColumns="False">
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding UserId}" Width="50"/>
-                            <DataGridTextColumn Header="Username" Binding="{Binding Username}" Width="*"/>
-                            <DataGridTextColumn Header="UserType" Binding="{Binding UserType}" Width="100"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding UserId}" Width="60"/>
+                            <DataGridTextColumn Header="Логін" Binding="{Binding Username}" Width="*"/>
+                            <DataGridTextColumn Header="Тип" Binding="{Binding UserType}" Width="120"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
 
-            <!-- COURSES TAB -->
-            <TabItem Header="Courses">
+            <TabItem Header="Курси">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
-                    <StackPanel Orientation="Horizontal" Margin="0 0 0 10">
-                        <TextBox Width="200" Margin="5"
-                                 Text="{Binding NewCourseName}" />
-                        <ComboBox Width="200" Margin="5"
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:TextBox Width="250" Margin="8,0"
+                                    PlaceholderText="Назва курсу"
+                                    Text="{Binding NewCourseName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <ComboBox Width="250" Margin="8,0"
                                   ItemsSource="{Binding Teachers}"
                                   DisplayMemberPath="Username"
                                   SelectedItem="{Binding SelectedTeacher}"/>
-                        <Button Content="Add Course" Width="100" Margin="5"
-                                Command="{Binding AddCourseCommand}"/>
-                        <Button Content="Delete Course" Width="100" Margin="5"
-                                Command="{Binding DeleteCourseCommand}"/>
+                        <ui:Button Content="Додати" Width="100" Margin="8,0"
+                                   Appearance="Primary"
+                                   Command="{Binding AddCourseCommand}"/>
+                        <ui:Button Content="Видалити" Width="100" Margin="8,0"
+                                   Appearance="Danger"
+                                   Command="{Binding DeleteCourseCommand}"/>
                     </StackPanel>
 
                     <DataGrid Grid.Row="1"
                               ItemsSource="{Binding Courses}"
                               SelectedItem="{Binding SelectedCourse}"
-                              AutoGenerateColumns="False">
+                              AutoGenerateColumns="False"
+                              IsReadOnly="True">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding CourseId}" Width="50"/>
-                            <DataGridTextColumn Header="Name" Binding="{Binding CourseName}" Width="*"/>
-                            <DataGridTextColumn Header="TeacherId" Binding="{Binding TeacherId}" Width="100"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding CourseId}" Width="60"/>
+                            <DataGridTextColumn Header="Назва" Binding="{Binding CourseName}" Width="*"/>
+                            <DataGridTextColumn Header="ID Викладача" Binding="{Binding TeacherId}" Width="120"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
-
         </TabControl>
     </Grid>
-</Window>
+</ui:FluentWindow>

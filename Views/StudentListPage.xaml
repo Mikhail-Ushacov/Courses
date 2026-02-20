@@ -1,27 +1,35 @@
-﻿<Page x:Class="Courses.StudentListPage"
+<Page x:Class="Courses.StudentListPage"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      Title="StudentListPage">
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Список студентів">
 
-    <StackPanel Margin="20">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <TextBlock Text="{Binding CourseName}"
-                   FontSize="22"
-                   FontWeight="Bold"
-                   Margin="0,0,0,20"/>
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,24">
+            <ui:SymbolIcon Symbol="People24" FontSize="32" Margin="0,0,16,0"/>
+            <TextBlock Text="{Binding CourseName}"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </StackPanel>
 
-        <DataGrid ItemsSource="{Binding Students}"
+        <DataGrid Grid.Row="1"
+                  ItemsSource="{Binding Students}"
                   AutoGenerateColumns="False"
                   IsReadOnly="True">
-
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Студент"
-                                    Binding="{Binding Username}" />
-
+                                    Binding="{Binding Username}"
+                                    Width="*"/>
                 <DataGridTextColumn Header="Оцінка"
-                                    Binding="{Binding Grade}" />
+                                    Binding="{Binding Grade}"
+                                    Width="120"/>
             </DataGrid.Columns>
         </DataGrid>
-
-    </StackPanel>
+    </Grid>
 </Page>

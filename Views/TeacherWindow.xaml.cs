@@ -1,22 +1,27 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Windows;
 using Courses.Services;
+using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
 namespace Courses
 {
-    public partial class TeacherWindow : Window
+    public partial class TeacherWindow : FluentWindow
     {
         private TeacherViewModel _viewModel;
 
         public TeacherWindow()
         {
             InitializeComponent();
+            SystemThemeWatcher.Watch(this);
 
             AppNavigationService.NavigateAction = view =>
             {
                 MainFrame.Content = view;
             };
+
+            MainFrame.Content = new TeacherPage();
 
             try
             {
@@ -27,11 +32,11 @@ namespace Courses
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Помилка під час запуску програми: {ex.Message}\n\n" +
+                System.Windows.MessageBox.Show($"Помилка під час запуску програми: {ex.Message}\n\n" +
                                 $"Спробуйте перезапустити програму або перевірте права доступу до папки AppData.",
                                 "Критична помилка ініціалізації",
-                                MessageBoxButton.OK,
-                                MessageBoxImage.Error);
+                                System.Windows.MessageBoxButton.OK,
+                                System.Windows.MessageBoxImage.Error);
 
                 Application.Current.Shutdown();
             }

@@ -1,7 +1,8 @@
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Xml.Linq;
-using System.Text;
-using System.ComponentModel;
+using Courses.Models;
 
 public class LectureViewModel : INotifyPropertyChanged
 {
@@ -10,34 +11,24 @@ public class LectureViewModel : INotifyPropertyChanged
     private string lectureTitle = string.Empty;
     private string lectureAuthor = string.Empty;
     private string lectureDate = string.Empty;
-    private string lectureContent = string.Empty;
+    public ObservableCollection<LectureSection> Sections { get; } = new();
 
     public string LectureTitle
     {
         get => lectureTitle;
-        set { lectureTitle = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LectureTitle")); }
+        set { lectureTitle = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LectureTitle))); }
     }
 
     public string LectureAuthor
     {
         get => lectureAuthor;
-        set { lectureAuthor = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LectureAuthor")); }
+        set { lectureAuthor = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LectureAuthor))); }
     }
 
     public string LectureDate
     {
         get => lectureDate;
-        set { lectureDate = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LectureDate")); }
-    }
-
-    public string LectureContent
-    {
-        get => lectureContent;
-        set
-        {
-            lectureContent = value;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("LectureContent"));
-        }
+        set { lectureDate = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(LectureDate))); }
     }
 
     public LectureViewModel(int lectureId)
@@ -48,7 +39,7 @@ public class LectureViewModel : INotifyPropertyChanged
 
         if (lecture == null)
         {
-            LectureContent = "Лекцію не знайдено.";
+            Sections.Add(new LectureSection { Paragraph = "Лекцію не знайдено." });
             return;
         }
 
@@ -60,7 +51,7 @@ public class LectureViewModel : INotifyPropertyChanged
         }
         else
         {
-            LectureContent = "Файл лекції не знайдено.";
+            Sections.Add(new LectureSection { Paragraph = "Файл лекції не знайдено." });
         }
     }
 
@@ -85,40 +76,34 @@ public class LectureViewModel : INotifyPropertyChanged
             if (dateEl != null)
                 LectureDate = dateEl.Value;
 
-            var sb = new StringBuilder();
-
             foreach (var section in root.Elements("section"))
             {
+                var lectureSection = new LectureSection();
+
                 var heading = section.Element("heading");
                 if (heading != null)
-                {
-                    sb.AppendLine("=== " + heading.Value + " ===");
-                    sb.AppendLine();
-                }
+                    lectureSection.Heading = heading.Value;
 
-                foreach (var para in section.Elements("paragraph"))
-                {
-                    sb.AppendLine(para.Value);
-                    sb.AppendLine();
-                }
+                var para = section.Element("paragraph");
+                if (para != null)
+                    lectureSection.Paragraph = para.Value;
 
                 var list = section.Element("list");
                 if (list != null)
                 {
                     foreach (var item in list.Elements("item"))
                     {
-                        sb.AppendLine("• " + item.Value);
+                        lectureSection.ListItems.Add(item.Value);
                     }
-                    sb.AppendLine();
                 }
-            }
 
-            LectureContent = sb.ToString();
+                Sections.Add(lectureSection);
+            }
         }
         catch (Exception ex)
         {
             System.Diagnostics.Debug.WriteLine($"[LectureViewModel] Error parsing XML: {ex.Message}");
-            LectureContent = "Помилка при читанні лекції.";
+            Sections.Add(new LectureSection { Paragraph = "Помилка при читанні лекції." });
         }
     }
 

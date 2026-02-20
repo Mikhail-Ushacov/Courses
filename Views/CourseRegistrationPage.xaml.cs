@@ -1,5 +1,6 @@
 using System.Windows.Controls;
 
+
 namespace Courses
 {
     public partial class CourseRegistrationPage : Page

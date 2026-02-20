@@ -1,4 +1,5 @@
 using Courses.Models;
+using Courses.Services;
 using Courses.Views;
 using System;
 using System.IO;
@@ -15,13 +16,12 @@ namespace Courses
             DataContext = new StudentViewModel();
         }
 
-        private void CourseButton_Click(object sender, RoutedEventArgs e)
+        private void CourseCard_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is Course selectedCourse)
+            if (sender is FrameworkElement element && element.DataContext is Course selectedCourse)
             {
-                NavigationService?.Navigate(new CoursePage(selectedCourse.CourseId));
+                AppNavigationService.Navigate(new CoursePage(selectedCourse.CourseId));
             }
         }
-
     }
 }

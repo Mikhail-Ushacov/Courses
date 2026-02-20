@@ -1,11 +1,10 @@
 using Courses.Models;
-using Courses.Views;
 using Courses.Services;
+using Courses.Views;
 using System;
-using System.IO;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using Courses.Services;
 
 namespace Courses
 {
@@ -30,20 +29,20 @@ namespace Courses
             DataContext = this;
         }
 
-        private void LectureButton_Click(object sender, RoutedEventArgs e)
+        private void LectureCard_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is Lecture selectedLecture)
+            if (sender is FrameworkElement element && element.DataContext is Lecture selectedLecture)
             {
-                NavigationService?.Navigate(new LecturePage(selectedLecture.LectureId));
+                AppNavigationService.Navigate(new LecturePage(selectedLecture.LectureId));
             }
         }
 
-        private void TestButton_Click(object sender, RoutedEventArgs e)
+        private void TestCard_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button button && button.DataContext is Test selectedTest)
+            if (sender is FrameworkElement element && element.DataContext is Test selectedTest)
             {
                 var userId = CurrentUser.User?.UserId ?? 0;
-                NavigationService?.Navigate(new TestPage(selectedTest.TestId, userId, CurrentCourse.CourseId));
+                AppNavigationService.Navigate(new TestPage(selectedTest.TestId, userId, CurrentCourse.CourseId));
             }
         }
     }

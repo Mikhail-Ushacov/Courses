@@ -50,7 +50,7 @@ public class MainViewModel : INotifyPropertyChanged
 
     private void GoToMainPage()
     {
-        AppNavigationService.Navigate(new Courses.Views.MainPage());
+        AppNavigationService.Navigate(new Courses.Views.HomePage());
     }
 
     private void GoToStudentPage()

@@ -1,71 +1,79 @@
-﻿<Window x:Class="Courses.TeacherWindow"
+<ui:FluentWindow x:Class="Courses.TeacherWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:local="clr-namespace:Courses.Views"
         mc:Ignorable="d"
-        Title="Освітня Система" Height="600" Width="1000"
+        Title="Освітня Система"
+        Height="650" Width="1100"
         WindowStartupLocation="CenterScreen"
-        >
-
-    <Window.Resources>
-        <Style x:Key="MenuButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Height" Value="45"/>
-            <Setter Property="Margin" Value="5"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}" CornerRadius="5">
-                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="#3D4E63"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="Mica">
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="220"/>
-            <ColumnDefinition Width="*"/>
-        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <Border Grid.Column="0" Background="#2C3E50">
-            <StackPanel Margin="10">
-                <TextBlock Text="{Binding WelcomeMessage}" Foreground="White" FontSize="20" FontWeight="Bold" 
-                           HorizontalAlignment="Center" Margin="0,20,0,30"/>
+        <ui:TitleBar Grid.Row="0" Title="Освітня Система"/>
 
-                <Button Content="Мої курси" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding GoToTeacherPageCommand}"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-                <Button x:Name="StudentButton" Content="Список Студентів" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        Command="{Binding GoToStudentListPageCommand}"/>
+            <Border Grid.Column="0"
+                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                    CornerRadius="0,8,8,0">
+                <StackPanel Margin="8">
+                    <TextBlock Text="{Binding WelcomeMessage}"
+                               FontSize="16"
+                               FontWeight="SemiBold"
+                               HorizontalAlignment="Center"
+                               Margin="0,20,0,20"
+                               TextWrapping="Wrap"
+                               TextAlignment="Center"/>
 
-                <Separator Background="#3D4E63" Margin="10,20"/>
+                    <ui:Button Content="Мої курси"
+                               Icon="{ui:SymbolIcon Book24}"
+                               Command="{Binding GoToTeacherPageCommand}"
+                               HorizontalAlignment="Stretch"
+                               Margin="4"
+                               Padding="12,10"/>
 
-                <Button Content="Вихід" 
-                        Style="{StaticResource MenuButtonStyle}"
-                        VerticalAlignment="Bottom"
-                        Click="LogoutButton_Click"/>
-            </StackPanel>
-        </Border>
+                    <ui:Button Content="Студенти"
+                               Icon="{ui:SymbolIcon People24}"
+                               Command="{Binding GoToStudentListPageCommand}"
+                               HorizontalAlignment="Stretch"
+                               Margin="4"
+                               Padding="12,10"/>
 
-        <Grid Grid.Column="1" Background="#F5F6F7">
-            <Frame x:Name="MainFrame" 
-                   Content="{Binding CurrentPage}" 
-                   NavigationUIVisibility="Hidden"/>
+                    <Border Height="1"
+                            Background="{DynamicResource ControlStrokeColorDefaultBrush}"
+                            Margin="8,20"/>
+
+                    <ui:Button Content="Вихід"
+                               Icon="{ui:SymbolIcon ArrowExit20}"
+                               Appearance="Secondary"
+                               HorizontalAlignment="Stretch"
+                               Margin="4"
+                               Padding="12,10"
+                               Click="LogoutButton_Click"/>
+                </StackPanel>
+            </Border>
+
+            <Border Grid.Column="1"
+                    CornerRadius="8,0,0,0"
+                    Background="{DynamicResource ApplicationBackgroundBrush}"
+                    Margin="-1,0,0,0">
+                <Frame x:Name="MainFrame"
+                       Content="{Binding CurrentPage}"
+                       NavigationUIVisibility="Hidden"/>
+            </Border>
         </Grid>
     </Grid>
-</Window>
+</ui:FluentWindow>

@@ -1,15 +1,18 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
+using Wpf.Ui.Appearance;
+using Wpf.Ui.Controls;
 
 namespace Courses
 {
-    public partial class AdminWindow : Window
+    public partial class AdminWindow : FluentWindow
     {
         private AdminViewModel viewModel;
 
         public AdminWindow()
         {
             InitializeComponent();
+            SystemThemeWatcher.Watch(this);
             viewModel = new AdminViewModel();
             DataContext = viewModel;
         }
