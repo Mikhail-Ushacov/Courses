@@ -1,6 +1,7 @@
 using Microsoft.Data.Sqlite;
 using System;
 using System.IO;
+using System.Xml.Linq;
 
 namespace Courses.Services
 {
@@ -136,6 +137,49 @@ namespace Courses.Services
                 var fileName = Path.GetFileName(file);
                 var destPath = Path.Combine(destinationPath, fileName);
                 File.Copy(file, destPath, true);
+            }
+        }
+
+        private readonly DatabaseService _dbService;
+
+        public ContentInitializer() => _dbService = new DatabaseService();
+
+        public void ImportXmlTest(string xmlFilePath, int courseId)
+        {
+            XDocument doc = XDocument.Load(xmlFilePath);
+            var testTitle = doc.Root.Element("title")?.Value ?? "Тест";
+
+            using var conn = new SqliteConnection(_dbService.ConnectionString);
+            conn.Open();
+
+            // 1. Створюємо запис тесту
+            var testCmd = new SqliteCommand(
+                "INSERT INTO Tests (CourseId, TestName, ContentFilePath) VALUES (@cid, @name, @path); SELECT last_insert_rowid();", conn);
+            testCmd.Parameters.AddWithValue("@cid", courseId);
+            testCmd.Parameters.AddWithValue("@name", testTitle);
+            testCmd.Parameters.AddWithValue("@path", xmlFilePath);
+            int testId = Convert.ToInt32(testCmd.ExecuteScalar());
+
+            // 2. Парсимо питання
+            foreach (var qElem in doc.Root.Elements("question"))
+            {
+                var qCmd = new SqliteCommand(
+                    "INSERT INTO Questions (TestId, QuestionText) VALUES (@tid, @text); SELECT last_insert_rowid();", conn);
+                qCmd.Parameters.AddWithValue("@tid", testId);
+                qCmd.Parameters.AddWithValue("@text", qElem.Element("text")?.Value);
+                int qId = Convert.ToInt32(qCmd.ExecuteScalar());
+
+                // 3. Парсимо відповіді
+                foreach (var optElem in qElem.Element("options").Elements("option"))
+                {
+                    var optCmd = new SqliteCommand(
+                        "INSERT INTO AnswerOptions (QuestionId, AnswerText, Points) VALUES (@qid, @text, @pts)", conn);
+                    optCmd.Parameters.AddWithValue("@qid", qId);
+                    optCmd.Parameters.AddWithValue("@text", optElem.Value);
+                    // Якщо correct="true", даємо 1 бал
+                    optCmd.Parameters.AddWithValue("@pts", optElem.Attribute("correct")?.Value == "true" ? 1 : 0);
+                    optCmd.ExecuteNonQuery();
+                }
             }
         }
     }

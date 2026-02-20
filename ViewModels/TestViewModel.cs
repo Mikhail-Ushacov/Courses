@@ -3,8 +3,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Windows.Input;
 using System.Xml.Linq;
-using Courses.Models;
-using Courses.Services;
 
 public class TestViewModel : INotifyPropertyChanged
 {
@@ -22,12 +20,15 @@ public class TestViewModel : INotifyPropertyChanged
     public ObservableCollection<Question> Questions { get; set; }
 
     public ICommand SubmitTestCommand { get; }
+    public ICommand GoToStudentPageCommand { get; }
 
     public TestViewModel(int testId, int userId, int courseId)
     {
         _databaseService = new DatabaseService();
         _userId = userId;
         _courseId = courseId;
+
+        GoToStudentPageCommand = new RelayCommand(_ => GoToStudentPage());
 
         try
         {
@@ -57,6 +58,11 @@ public class TestViewModel : INotifyPropertyChanged
         }
 
         SubmitTestCommand = new RelayCommand(_ => SubmitTest());
+    }
+
+    private void GoToStudentPage()
+    {
+        AppNavigationService.Navigate(new Courses.StudentPage());
     }
 
     private void ParseTestXml(string filePath)
@@ -124,6 +130,7 @@ public class TestViewModel : INotifyPropertyChanged
                     totalPoints += answer.Points;
                     if (answer.Points > 0)
                         totalCorrect++;
+                    GoToStudentPage();
                 }
             }
         }
@@ -132,4 +139,21 @@ public class TestViewModel : INotifyPropertyChanged
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;
+
+    public class QuestionViewModel
+    {
+        public string Text { get; set; }
+        public List<SelectableAnswerOption> Answers { get; set; }
+
+        public QuestionViewModel(Question q)
+        {
+            Text = q.QuestionText;
+            Answers = q.AnswerOptions.Select(a => new SelectableAnswerOption
+            {
+                AnswerId = a.AnswerId,
+                AnswerText = a.AnswerText,
+                Points = a.Points
+            }).ToList();
+        }
+    }
 }
