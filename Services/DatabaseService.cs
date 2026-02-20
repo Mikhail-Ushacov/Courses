@@ -386,4 +386,37 @@ public void DeleteCourse(int courseId)
 
         return Convert.ToDouble(result);
     }
+
+    public List<(User student, double? grade)> GetStudentsByCourse(int courseId)
+{
+    var result = new List<(User, double?)>();
+
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(@"
+        SELECT u.UserId, u.Username, e.FinalGrade
+        FROM Enrollments e
+        JOIN Users u ON u.UserId = e.UserId
+        WHERE e.CourseId = @CourseId AND u.UserType = 0", conn); // 0 = Student
+
+    cmd.Parameters.AddWithValue("@CourseId", courseId);
+
+    using var reader = cmd.ExecuteReader();
+
+    while (reader.Read())
+    {
+        var student = new User
+        {
+            UserId = reader.GetInt32(0),
+            Username = reader.GetString(1)
+        };
+
+        double? grade = reader.IsDBNull(2) ? null : reader.GetDouble(2);
+
+        result.Add((student, grade));
+    }
+
+    return result;
+}
 }

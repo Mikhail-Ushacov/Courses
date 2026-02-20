@@ -5,22 +5,29 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Courses.Services;
 
 namespace Courses
 {
     public partial class CoursePage : Page
     {
         private readonly DatabaseService _databaseService;
-        private Course _course;
+        public Course CurrentCourse { get; set; }
+        public List<Lecture> Lectures { get; set; }
+        public List<Test> Tests { get; set; }
 
         public CoursePage(int courseId)
         {
             InitializeComponent();
+
             _databaseService = new DatabaseService();
 
-            _course = _databaseService.GetCourseById(courseId);
+            CurrentCourse = _databaseService.GetCourseById(courseId);
 
-            DataContext = _course;
+            Lectures = _databaseService.GetLecturesByCourseId(courseId);
+            Tests = _databaseService.GetTestsByCourseId(courseId);
+
+            DataContext = this;
         }
     }
 }

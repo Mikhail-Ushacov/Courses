@@ -1,0 +1,27 @@
+﻿<Page x:Class="Courses.Views.StudentListPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      Title="StudentListPage">
+
+    <StackPanel Margin="20">
+
+        <TextBlock Text="{Binding CourseName}"
+                   FontSize="22"
+                   FontWeight="Bold"
+                   Margin="0,0,0,20"/>
+
+        <DataGrid ItemsSource="{Binding Students}"
+                  AutoGenerateColumns="False"
+                  IsReadOnly="True">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Студент"
+                                    Binding="{Binding Username}" />
+
+                <DataGridTextColumn Header="Оцінка"
+                                    Binding="{Binding Grade}" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </StackPanel>
+</Page>
