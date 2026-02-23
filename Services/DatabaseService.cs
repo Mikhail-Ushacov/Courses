@@ -346,6 +346,44 @@ public List<TestResult> GetTestResultsByCourse(int userId, int courseId)
     return results;
 }
 
+public List<TestDisplay> GetTestDisplaysForUser(int userId, int courseId)
+{
+    var displays = new List<TestDisplay>();
+
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(@"
+        SELECT t.TestId, t.CourseId, t.TestName, t.IsFinalTest, t.AvailableFrom, t.AvailableUntil,
+               tr.TestMark, tr.MaxMark
+        FROM Tests t
+        LEFT JOIN TestResults tr ON t.TestId = tr.TestId AND tr.UserId = @UserId
+        WHERE t.CourseId = @CourseId", conn);
+
+    cmd.Parameters.AddWithValue("@UserId", userId);
+    cmd.Parameters.AddWithValue("@CourseId", courseId);
+
+    using var reader = cmd.ExecuteReader();
+
+    while (reader.Read())
+    {
+        displays.Add(new TestDisplay
+        {
+            TestId = reader.GetInt32(0),
+            CourseId = reader.GetInt32(1),
+            TestName = reader.GetString(2),
+            IsFinalTest = !reader.IsDBNull(3) && reader.GetInt32(3) == 1,
+            AvailableFrom = reader.IsDBNull(4) ? null : DateTimeOffset.Parse(reader.GetString(4), CultureInfo.InvariantCulture),
+            AvailableUntil = reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture),
+            IsCompleted = !reader.IsDBNull(6),
+            Score = reader.IsDBNull(6) ? null : reader.GetDouble(6),
+            MaxScore = reader.IsDBNull(7) ? null : reader.GetDouble(7)
+        });
+    }
+
+    return displays;
+}
+
 public Test? GetFinalTestByCourse(int courseId)
 {
     using var conn = new SqliteConnection(ConnectionString);

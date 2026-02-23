@@ -7,6 +7,7 @@
 
     <Page.Resources>
         <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <converters:InverseBooleanToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter"/>
     </Page.Resources>
 
     <Grid Margin="24">
@@ -17,7 +18,8 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <ui:CardAction Margin="0,4" Padding="16" Cursor="Hand"
-                                               Click="LectureCard_Click">
+                                               Command="{Binding DataContext.OpenLectureCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                               CommandParameter="{Binding}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
@@ -34,13 +36,13 @@
                                         </StackPanel>
 
                                         <TextBlock Grid.Column="1"
-                                                   Text="{Binding AvailableFrom, StringFormat='З: {0}'}"
+                                                   Text="{Binding AvailableFrom, StringFormat='З: {0:dd.MM}'}"
                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                    VerticalAlignment="Center"
                                                    Margin="0,0,24,0"/>
 
                                         <TextBlock Grid.Column="2"
-                                                   Text="{Binding AvailableUntil, StringFormat='До: {0}'}"
+                                                   Text="{Binding AvailableUntil, StringFormat='До: {0:dd.MM}'}"
                                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                    VerticalAlignment="Center"/>
                                     </Grid>
@@ -57,11 +59,11 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <ui:CardAction Margin="0,4" Padding="16" Cursor="Hand"
-                                               Click="TestCard_Click">
+                                               Command="{Binding DataContext.OpenTestCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                               CommandParameter="{Binding}">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
@@ -84,16 +86,33 @@
                                             </Border>
                                         </StackPanel>
 
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding AvailableFrom, StringFormat='З: {0}'}"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                   VerticalAlignment="Center"
-                                                   Margin="0,0,24,0"/>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <StackPanel Visibility="{Binding IsCompleted, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                        Orientation="Horizontal">
+                                                <ui:SymbolIcon Symbol="Checkmark24" FontSize="16" 
+                                                               Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                                                               Margin="0,0,4,0"
+                                                               VerticalAlignment="Center"/>
+                                                <TextBlock Foreground="{DynamicResource SystemFillColorSuccessBrush}"
+                                                           FontWeight="SemiBold"
+                                                           VerticalAlignment="Center">
+                                                    <Run Text="{Binding Score, Mode=OneWay}"/>
+                                                    <Run Text="/"/>
+                                                    <Run Text="{Binding MaxScore, Mode=OneWay}"/>
+                                                </TextBlock>
+                                            </StackPanel>
 
-                                        <TextBlock Grid.Column="2"
-                                                   Text="{Binding AvailableUntil, StringFormat='До: {0}'}"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                   VerticalAlignment="Center"/>
+                                            <StackPanel Visibility="{Binding IsCompleted, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
+                                                        Orientation="Horizontal">
+                                                <TextBlock Text="{Binding AvailableFrom, StringFormat='З: {0:dd.MM}'}"
+                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,24,0"/>
+                                                <TextBlock Text="{Binding AvailableUntil, StringFormat='До: {0:dd.MM}'}"
+                                                           Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                           VerticalAlignment="Center"/>
+                                            </StackPanel>
+                                        </StackPanel>
                                     </Grid>
                                 </ui:CardAction>
                             </DataTemplate>
