@@ -9,14 +9,37 @@ namespace Courses.Views
     public partial class LoginPage : FluentWindow
     {
         private LoginViewModel _viewModel;
+        private AuthService? _authService;
 
         public LoginPage()
         {
-            InitializeComponent();
-            SystemThemeWatcher.Watch(this);
             string connectionString = GetConnectionString();
             _viewModel = new LoginViewModel(this, connectionString);
             DataContext = _viewModel;
+            
+            InitializeComponent();
+            SystemThemeWatcher.Watch(this);
+        }
+
+        public LoginPage(string successMessage = null)
+        {
+            string connectionString = GetConnectionString();
+            _viewModel = new LoginViewModel(this, connectionString, successMessage);
+            DataContext = _viewModel;
+            
+            InitializeComponent();
+            SystemThemeWatcher.Watch(this);
+        }
+
+        public LoginPage(AuthService authService, string successMessage = null)
+        {
+            string connectionString = GetConnectionString();
+            _authService = authService ?? new AuthService(connectionString);
+            _viewModel = new LoginViewModel(this, connectionString, successMessage);
+            DataContext = _viewModel;
+            
+            InitializeComponent();
+            SystemThemeWatcher.Watch(this);
         }
 
         private void PasswordBox_PasswordChanged(object sender, System.Windows.RoutedEventArgs e)

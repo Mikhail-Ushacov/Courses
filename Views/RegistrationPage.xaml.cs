@@ -25,5 +25,11 @@ namespace Courses.Views
         {
             _viewModel.ConfirmPassword = ConfirmPasswordBox.Password;
         }
+
+        public void ClearPasswordFields()
+        {
+            PasswordBox.Password = string.Empty;
+            ConfirmPasswordBox.Password = string.Empty;
+        }
     }
 }

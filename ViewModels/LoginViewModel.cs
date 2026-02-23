@@ -12,6 +12,7 @@ namespace Courses.ViewModels
         private string _username = string.Empty;
         private string _password = string.Empty;
         private string _errorMessage = string.Empty;
+        private string _successMessage = string.Empty;
         private readonly AuthService _authService;
         private readonly FluentWindow _loginWindow;
 
@@ -48,14 +49,26 @@ namespace Courses.ViewModels
             }
         }
 
+        public string SuccessMessage
+        {
+            get => _successMessage;
+            set
+            {
+                _successMessage = value;
+                OnPropertyChanged(nameof(SuccessMessage));
+                OnPropertyChanged(nameof(HasSuccess));
+            }
+        }
+
         public bool HasError => !string.IsNullOrEmpty(_errorMessage);
+        public bool HasSuccess => !string.IsNullOrEmpty(_successMessage);
 
         public ICommand LoginCommand { get; }
         public ICommand GoToRegistrationCommand { get; }
         public ICommand GoToTeacherWindowCommand { get; }
         public ICommand GoToAdminWindowCommand { get; }
 
-        public LoginViewModel(FluentWindow loginWindow, string connectionString)
+        public LoginViewModel(FluentWindow loginWindow, string connectionString, string successMessage = null)
         {
             _loginWindow = loginWindow;
             _authService = new AuthService(connectionString);
@@ -63,6 +76,11 @@ namespace Courses.ViewModels
             GoToRegistrationCommand = new RelayCommand(() => GoToRegistration());
             GoToTeacherWindowCommand = new RelayCommand(() => GoToTeacherWindow());
             GoToAdminWindowCommand = new RelayCommand(() => GoToAdminWindow());
+
+            if (!string.IsNullOrEmpty(successMessage))
+            {
+                SuccessMessage = successMessage;
+            }
         }
 
         private void GoToTeacherWindow()

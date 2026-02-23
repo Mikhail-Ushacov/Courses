@@ -29,6 +29,24 @@
                      ShowMaximize="False"/>
 
         <Grid Grid.Row="1">
+            <ui:InfoBar Title="{Binding SuccessMessage}"
+                        Severity="Success"
+                        IsOpen="{Binding HasSuccess}"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        Margin="0,20,0,0"
+                        MaxWidth="370"
+                        Panel.ZIndex="1"/>
+
+            <ui:InfoBar Title="{Binding ErrorMessage}"
+                        Severity="Error"
+                        IsOpen="{Binding HasError}"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center"
+                        Margin="0,20,0,0"
+                        MaxWidth="370"
+                        Panel.ZIndex="1"/>
+
             <Border CornerRadius="8" 
                     Background="{DynamicResource ApplicationBackgroundBrush}"
                     Padding="40">
@@ -59,28 +77,23 @@
                                 Margin="0,0,0,16"
                                 Icon="{ui:SymbolIcon Person24}"/>
 
-                    <ui:PasswordBox x:Name="PasswordBox"
-                                    PlaceholderText="Пароль"
-                                    FontSize="14"
-                                    Height="40"
-                                    Margin="0,0,0,8"
-                                    PasswordChanged="PasswordBox_PasswordChanged"
-                                    Icon="{ui:SymbolIcon LockClosed24}"/>
+                     <ui:PasswordBox x:Name="PasswordBox"
+                                     PlaceholderText="Пароль"
+                                     FontSize="14"
+                                     Height="40"
+                                     Margin="0,0,0,8"
+                                     PasswordChanged="PasswordBox_PasswordChanged"
+                                     Icon="{ui:SymbolIcon LockClosed24}"/>
 
-                    <ui:InfoBar Title="{Binding ErrorMessage}"
-                                Severity="Error"
-                                IsOpen="{Binding HasError}"
-                                Margin="0,8,0,16"/>
-
-                    <ui:Button Content="Увійти"
-                               Command="{Binding LoginCommand}"
-                               FontSize="15"
-                               FontWeight="SemiBold"
-                               Height="42"
-                               HorizontalAlignment="Stretch"
-                               HorizontalContentAlignment="Center"
-                               Appearance="Primary"
-                               Margin="0,8,0,20"/>
+                     <ui:Button Content="Увійти"
+                                Command="{Binding LoginCommand}"
+                                FontSize="15"
+                                FontWeight="SemiBold"
+                                Height="42"
+                                HorizontalAlignment="Stretch"
+                                HorizontalContentAlignment="Center"
+                                Appearance="Primary"
+                                Margin="0,16,0,20"/>
 
                     <ui:Button Content="Зареєструватися"
                                Command="{Binding GoToRegistrationCommand}"

@@ -118,10 +118,16 @@ namespace Courses.ViewModels
 
             if (success)
             {
-                SuccessMessage = "Реєстрація успішна! Тепер ви можете увійти.";
+                var registrationPage = _registrationWindow as Views.RegistrationPage;
+                registrationPage?.ClearPasswordFields();
                 Username = string.Empty;
                 Password = string.Empty;
                 ConfirmPassword = string.Empty;
+
+                _loginWindow?.Close();
+                var loginPage = new Views.LoginPage(_authService, "Реєстрація успішна! Тепер ви можете увійти.");
+                loginPage.Show();
+                _registrationWindow.Close();
             }
             else
             {
