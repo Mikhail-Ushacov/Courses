@@ -138,7 +138,7 @@ public class DatabaseService
         using (var conn = new SqliteConnection(connectionString))
         {
             conn.Open();
-            var command = new SqliteCommand("SELECT TestId, TestName, ContentFilePath FROM Tests WHERE TestId = @TestId", conn);
+            var command = new SqliteCommand("SELECT TestId, CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil, IsFinalTest, TestMax FROM Tests WHERE TestId = @TestId", conn);
             command.Parameters.AddWithValue("@TestId", testId);
             var reader = command.ExecuteReader();
 
@@ -146,9 +146,14 @@ public class DatabaseService
             {
                 return new Test 
                 { 
-                    TestId = reader.GetInt32(0), 
-                    TestName = reader.GetString(1),
-                    ContentFilePath = reader.GetString(2)
+                    TestId = reader.GetInt32(0),
+                    CourseId = reader.GetInt32(1),
+                    TestName = reader.GetString(2),
+                    ContentFilePath = reader.GetString(3),
+                    AvailableFrom = reader.IsDBNull(4) ? null : DateTimeOffset.Parse(reader.GetString(4), CultureInfo.InvariantCulture),
+                    AvailableUntil = reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture),
+                    IsFinalTest = !reader.IsDBNull(6) && reader.GetInt32(6) == 1,
+                    TestMax = reader.IsDBNull(7) ? 0 : reader.GetDouble(7)
                 };
             }
             return null;
@@ -231,10 +236,10 @@ public bool AllCourseTestsCompleted(int userId, int courseId)
 
     var cmd = new SqliteCommand(@"
         SELECT COUNT(*) FROM Tests 
-        WHERE CourseId = @CourseId 
+        WHERE CourseId = @CourseId AND IsFinalTest = 0
         AND TestId NOT IN (
-            SELECT CourseId FROM Enrollments 
-            WHERE UserId = @UserId AND IsCompleted = 1
+            SELECT TestId FROM TestResults 
+            WHERE UserId = @UserId
         )", conn);
 
     cmd.Parameters.AddWithValue("@UserId", userId);
@@ -244,6 +249,182 @@ public bool AllCourseTestsCompleted(int userId, int courseId)
     long count = result == null ? 0 : Convert.ToInt64(result);
 
     return count == 0;
+}
+
+public bool HasTestResult(int userId, int testId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand("SELECT COUNT(*) FROM TestResults WHERE UserId = @UserId AND TestId = @TestId", conn);
+    cmd.Parameters.AddWithValue("@UserId", userId);
+    cmd.Parameters.AddWithValue("@TestId", testId);
+
+    var result = cmd.ExecuteScalar();
+    return Convert.ToInt64(result) > 0;
+}
+
+public void SaveTestResult(int userId, int courseId, int testId, double testMark, double maxMark)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(@"
+        INSERT OR REPLACE INTO TestResults (CourseId, TestId, UserId, TestMark, MaxMark, CompletedAt)
+        VALUES (@CourseId, @TestId, @UserId, @TestMark, @MaxMark, @CompletedAt)", conn);
+
+    cmd.Parameters.AddWithValue("@CourseId", courseId);
+    cmd.Parameters.AddWithValue("@TestId", testId);
+    cmd.Parameters.AddWithValue("@UserId", userId);
+    cmd.Parameters.AddWithValue("@TestMark", testMark);
+    cmd.Parameters.AddWithValue("@MaxMark", maxMark);
+    cmd.Parameters.AddWithValue("@CompletedAt", DateTimeOffset.UtcNow.ToString("o"));
+
+    cmd.ExecuteNonQuery();
+}
+
+public TestResult? GetTestResult(int userId, int testId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(@"
+        SELECT ResultId, CourseId, TestId, UserId, TestMark, MaxMark, CompletedAt
+        FROM TestResults WHERE UserId = @UserId AND TestId = @TestId", conn);
+
+    cmd.Parameters.AddWithValue("@UserId", userId);
+    cmd.Parameters.AddWithValue("@TestId", testId);
+
+    using var reader = cmd.ExecuteReader();
+
+    if (reader.Read())
+    {
+        return new TestResult
+        {
+            ResultId = reader.GetInt32(0),
+            CourseId = reader.GetInt32(1),
+            TestId = reader.GetInt32(2),
+            UserId = reader.GetInt32(3),
+            TestMark = reader.GetDouble(4),
+            MaxMark = reader.GetDouble(5),
+            CompletedAt = DateTimeOffset.Parse(reader.GetString(6), CultureInfo.InvariantCulture)
+        };
+    }
+    return null;
+}
+
+public List<TestResult> GetTestResultsByCourse(int userId, int courseId)
+{
+    var results = new List<TestResult>();
+
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(@"
+        SELECT ResultId, CourseId, TestId, UserId, TestMark, MaxMark, CompletedAt
+        FROM TestResults WHERE UserId = @UserId AND CourseId = @CourseId", conn);
+
+    cmd.Parameters.AddWithValue("@UserId", userId);
+    cmd.Parameters.AddWithValue("@CourseId", courseId);
+
+    using var reader = cmd.ExecuteReader();
+
+    while (reader.Read())
+    {
+        results.Add(new TestResult
+        {
+            ResultId = reader.GetInt32(0),
+            CourseId = reader.GetInt32(1),
+            TestId = reader.GetInt32(2),
+            UserId = reader.GetInt32(3),
+            TestMark = reader.GetDouble(4),
+            MaxMark = reader.GetDouble(5),
+            CompletedAt = DateTimeOffset.Parse(reader.GetString(6), CultureInfo.InvariantCulture)
+        });
+    }
+
+    return results;
+}
+
+public Test? GetFinalTestByCourse(int courseId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(@"
+        SELECT TestId, CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil, IsFinalTest, TestMax
+        FROM Tests WHERE CourseId = @CourseId AND IsFinalTest = 1", conn);
+
+    cmd.Parameters.AddWithValue("@CourseId", courseId);
+
+    using var reader = cmd.ExecuteReader();
+
+    if (reader.Read())
+    {
+        return new Test
+        {
+            TestId = reader.GetInt32(0),
+            CourseId = reader.GetInt32(1),
+            TestName = reader.GetString(2),
+            ContentFilePath = reader.GetString(3),
+            AvailableFrom = reader.IsDBNull(4) ? null : DateTimeOffset.Parse(reader.GetString(4), CultureInfo.InvariantCulture),
+            AvailableUntil = reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture),
+            IsFinalTest = true,
+            TestMax = reader.IsDBNull(7) ? 0 : reader.GetDouble(7)
+        };
+    }
+    return null;
+}
+
+public bool SetTestAsFinal(int courseId, int testId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    using var transaction = conn.BeginTransaction();
+
+    try
+    {
+        var checkCmd = new SqliteCommand(
+            "SELECT COUNT(*) FROM Tests WHERE CourseId = @CourseId AND IsFinalTest = 1 AND TestId != @TestId", 
+            conn, transaction);
+        checkCmd.Parameters.AddWithValue("@CourseId", courseId);
+        checkCmd.Parameters.AddWithValue("@TestId", testId);
+
+        var existingFinal = Convert.ToInt64(checkCmd.ExecuteScalar());
+        if (existingFinal > 0)
+        {
+            transaction.Rollback();
+            return false;
+        }
+
+        var updateCmd = new SqliteCommand(
+            "UPDATE Tests SET IsFinalTest = 1 WHERE TestId = @TestId AND CourseId = @CourseId", 
+            conn, transaction);
+        updateCmd.Parameters.AddWithValue("@TestId", testId);
+        updateCmd.Parameters.AddWithValue("@CourseId", courseId);
+        updateCmd.ExecuteNonQuery();
+
+        transaction.Commit();
+        return true;
+    }
+    catch
+    {
+        transaction.Rollback();
+        return false;
+    }
+}
+
+public void UnsetFinalTest(int courseId, int testId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+
+    var cmd = new SqliteCommand(
+        "UPDATE Tests SET IsFinalTest = 0 WHERE TestId = @TestId AND CourseId = @CourseId", conn);
+    cmd.Parameters.AddWithValue("@TestId", testId);
+    cmd.Parameters.AddWithValue("@CourseId", courseId);
+    cmd.ExecuteNonQuery();
 }
 public List<Lecture> GetLecturesByCourseId(int courseId)
 {
@@ -284,7 +465,7 @@ public List<Test> GetTestsByCourseId(int courseId)
     conn.Open();
 
     var cmd = new SqliteCommand(@"
-        SELECT TestId, CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil
+        SELECT TestId, CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil, IsFinalTest, TestMax
         FROM Tests WHERE CourseId = @CourseId", conn);
 
     cmd.Parameters.AddWithValue("@CourseId", courseId);
@@ -296,11 +477,13 @@ public List<Test> GetTestsByCourseId(int courseId)
         tests.Add(new Test
         {
             TestId = reader.GetInt32(0),
-            CourseId = courseId,
+            CourseId = reader.GetInt32(1),
             TestName = reader.GetString(2),
             ContentFilePath = reader.GetString(3),
             AvailableFrom = reader.IsDBNull(4) ? null : DateTimeOffset.Parse(reader.GetString(4), CultureInfo.InvariantCulture),
-            AvailableUntil = reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture)
+            AvailableUntil = reader.IsDBNull(5) ? null : DateTimeOffset.Parse(reader.GetString(5), CultureInfo.InvariantCulture),
+            IsFinalTest = !reader.IsDBNull(6) && reader.GetInt32(6) == 1,
+            TestMax = reader.IsDBNull(7) ? 0 : reader.GetDouble(7)
         });
     }
 

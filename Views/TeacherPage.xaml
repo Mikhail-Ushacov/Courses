@@ -2,7 +2,12 @@
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      xmlns:converters="clr-namespace:Courses.Converters"
       Title="Викладач">
+
+    <Page.Resources>
+        <converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Page.Resources>
 
     <Grid Margin="24">
         <TabControl>
@@ -35,6 +40,63 @@
                                         </StackPanel>
                                     </Grid>
                                 </ui:CardAction>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </TabItem>
+
+            <TabItem Header="Тести курсів">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
+                    <ItemsControl ItemsSource="{Binding CourseTests}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ui:Card Margin="0,4,0,8" Padding="16">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                                                <ui:SymbolIcon Symbol="ClipboardTask24" FontSize="20" Margin="0,0,12,0"/>
+                                                <TextBlock Text="{Binding TestName}"
+                                                           FontSize="14"
+                                                           FontWeight="SemiBold"
+                                                           VerticalAlignment="Center"/>
+                                                <Border Visibility="{Binding IsFinalTest, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                        Background="{DynamicResource AccentFillColorDefaultBrush}"
+                                                        CornerRadius="4"
+                                                        Padding="6,2"
+                                                        Margin="8,0,0,0"
+                                                        VerticalAlignment="Center">
+                                                    <TextBlock Text="Підсумковий" 
+                                                               FontSize="10"
+                                                               Foreground="White"
+                                                               FontWeight="Medium"/>
+                                                </Border>
+                                            </StackPanel>
+
+                                            <CheckBox Grid.Column="1"
+                                                      Content="Підсумковий тест"
+                                                      IsChecked="{Binding IsFinalTest, Mode=TwoWay}"
+                                                      Command="{Binding DataContext.ToggleFinalTestCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                      CommandParameter="{Binding}"/>
+                                        </Grid>
+                                        
+                                        <TextBlock Grid.Row="1"
+                                                   Text="{Binding CourseName}"
+                                                   FontSize="12"
+                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                   Margin="32,4,0,0"/>
+                                    </Grid>
+                                </ui:Card>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>

@@ -80,19 +80,19 @@ namespace Courses.Services
                 var test3Path = Path.Combine(testsPath, "test_lecture3.xml");
 
                 var cmdTest1 = new SqliteCommand(
-                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 1', @path, '2026-02-01T00:00:00Z', '2026-03-01T23:59:59Z')",
+                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil, IsFinalTest, TestMax) VALUES (1, 'Тест до лекції 1', @path, '2026-02-01T00:00:00Z', '2026-03-01T23:59:59Z', 0, 3)",
                     connection, transaction);
                 cmdTest1.Parameters.AddWithValue("@path", test1Path);
                 cmdTest1.ExecuteNonQuery();
 
                 var cmdTest2 = new SqliteCommand(
-                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 2', @path, '2026-02-10T00:00:00Z', '2026-03-10T23:59:59Z')",
+                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil, IsFinalTest, TestMax) VALUES (1, 'Тест до лекції 2', @path, '2026-02-10T00:00:00Z', '2026-03-10T23:59:59Z', 0, 3)",
                     connection, transaction);
                 cmdTest2.Parameters.AddWithValue("@path", test2Path);
                 cmdTest2.ExecuteNonQuery();
 
                 var cmdTest3 = new SqliteCommand(
-                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (1, 'Тест до лекції 3', @path, '2026-02-15T00:00:00Z', '2026-03-15T23:59:59Z')",
+                    "INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil, IsFinalTest, TestMax) VALUES (1, 'Підсумковий тест', @path, '2026-02-15T00:00:00Z', '2026-03-15T23:59:59Z', 1, 10)",
                     connection, transaction);
                 cmdTest3.Parameters.AddWithValue("@path", test3Path);
                 cmdTest3.ExecuteNonQuery();

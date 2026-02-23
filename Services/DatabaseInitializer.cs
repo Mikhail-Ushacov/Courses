@@ -23,6 +23,33 @@ public class DatabaseInitializer
         CreateQuestions(connection);
         CreateAnswerOptions(connection);
         CreateEnrollments(connection);
+        CreateTestResults(connection);
+        AddTestColumns(connection);
+    }
+
+    private void AddTestColumns(SqliteConnection connection)
+    {
+        var columns = new List<string>();
+        using (var cmd = new SqliteCommand("PRAGMA table_info(Tests);", connection))
+        using (var reader = cmd.ExecuteReader())
+        {
+            while (reader.Read())
+            {
+                columns.Add(reader.GetString(1));
+            }
+        }
+
+        if (!columns.Contains("IsFinalTest"))
+        {
+            using var cmd = new SqliteCommand("ALTER TABLE Tests ADD COLUMN IsFinalTest INTEGER DEFAULT 0;", connection);
+            cmd.ExecuteNonQuery();
+        }
+
+        if (!columns.Contains("TestMax"))
+        {
+            using var cmd = new SqliteCommand("ALTER TABLE Tests ADD COLUMN TestMax REAL DEFAULT 0;", connection);
+            cmd.ExecuteNonQuery();
+        }
     }
 
     private void EnableForeignKeys(SqliteConnection connection)
@@ -132,6 +159,26 @@ public class DatabaseInitializer
             UNIQUE(UserId, CourseId),
             FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
             FOREIGN KEY (CourseId) REFERENCES Courses(CourseId) ON DELETE CASCADE
+        );";
+
+        new SqliteCommand(sql, connection).ExecuteNonQuery();
+    }
+
+    private void CreateTestResults(SqliteConnection connection)
+    {
+        string sql = @"
+        CREATE TABLE IF NOT EXISTS TestResults (
+            ResultId INTEGER PRIMARY KEY AUTOINCREMENT,
+            CourseId INTEGER NOT NULL,
+            TestId INTEGER NOT NULL,
+            UserId INTEGER NOT NULL,
+            TestMark REAL NOT NULL,
+            MaxMark REAL NOT NULL,
+            CompletedAt TEXT NOT NULL,
+            UNIQUE(TestId, UserId),
+            FOREIGN KEY (CourseId) REFERENCES Courses(CourseId) ON DELETE CASCADE,
+            FOREIGN KEY (TestId) REFERENCES Tests(TestId) ON DELETE CASCADE,
+            FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE
         );";
 
         new SqliteCommand(sql, connection).ExecuteNonQuery();

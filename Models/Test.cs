@@ -13,4 +13,5 @@ public class Test
     public DateTimeOffset? AvailableUntil { get; set; }
 
     public bool IsFinalTest { get; set; }
+    public double TestMax { get; set; }
 }

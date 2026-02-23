@@ -9,6 +9,8 @@ public class TestViewModel : INotifyPropertyChanged
     private readonly DatabaseService _databaseService;
     private readonly int _userId;
     private readonly int _courseId;
+    private readonly int _testId;
+    private Test? _test;
     private string testTitle = string.Empty;
 
     public string TestTitle
@@ -16,6 +18,8 @@ public class TestViewModel : INotifyPropertyChanged
         get => testTitle;
         set { testTitle = value; PropertyChanged?.Invoke(this, new PropertyChangedEventArgs("TestTitle")); }
     }
+
+    public bool IsFinalTest => _test?.IsFinalTest ?? false;
 
     public ObservableCollection<Question> Questions { get; set; }
 
@@ -27,20 +31,21 @@ public class TestViewModel : INotifyPropertyChanged
         _databaseService = new DatabaseService();
         _userId = userId;
         _courseId = courseId;
+        _testId = testId;
 
         GoToStudentPageCommand = new RelayCommand(_ => GoToStudentPage());
 
         try
         {
-            var test = _databaseService.GetTestById(testId);
+            _test = _databaseService.GetTestById(testId);
 
-            if (test != null)
+            if (_test != null)
             {
-                TestTitle = test.TestName;
+                TestTitle = _test.TestName;
                 
-                if (File.Exists(test.ContentFilePath))
+                if (File.Exists(_test.ContentFilePath))
                 {
-                    ParseTestXml(test.ContentFilePath);
+                    ParseTestXml(_test.ContentFilePath);
                 }
                 else
                 {
@@ -57,7 +62,12 @@ public class TestViewModel : INotifyPropertyChanged
             Questions = new ObservableCollection<Question>();
         }
 
-        SubmitTestCommand = new RelayCommand(_ => SubmitTest());
+        SubmitTestCommand = new RelayCommand(_ => SubmitTest(), _ => CanSubmit());
+    }
+
+    private bool CanSubmit()
+    {
+        return !_databaseService.HasTestResult(_userId, _testId);
     }
 
     private void GoToStudentPage()
@@ -119,22 +129,29 @@ public class TestViewModel : INotifyPropertyChanged
     private void SubmitTest()
     {
         double totalPoints = 0;
-        int totalCorrect = 0;
+        double maxPoints = 0;
 
         foreach (var question in Questions)
         {
             foreach (var answer in question.AnswerOptions)
             {
+                maxPoints += answer.Points;
+                
                 if (answer is SelectableAnswerOption selectable && selectable.IsSelected)
                 {
                     totalPoints += answer.Points;
-                    if (answer.Points > 0)
-                        totalCorrect++;
                 }
             }
         }
 
-        _databaseService.SaveFinalGrade(_userId, _courseId, totalPoints);
+        _databaseService.SaveTestResult(_userId, _courseId, _testId, totalPoints, maxPoints);
+
+        if (_test?.IsFinalTest == true)
+        {
+            var finalGrade = maxPoints > 0 ? (totalPoints / maxPoints) * 100 : 0;
+            _databaseService.SaveFinalGrade(_userId, _courseId, finalGrade);
+        }
+
         GoToStudentPage();
     }
 
