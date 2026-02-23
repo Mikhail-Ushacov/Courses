@@ -11,32 +11,21 @@
 
     <Grid Margin="24">
         <TabControl>
+            <!-- ВКЛАДКА: МОЇ КУРСИ -->
             <TabItem Header="Мої курси">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                     <ItemsControl ItemsSource="{Binding ManagedCourses}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <ui:CardAction Margin="0,4" Padding="16" Cursor="Hand"
-                                               Click="CourseCard_Click">
+                                <ui:CardAction Margin="0,4" Padding="16" Cursor="Hand" Click="CourseCard_Click">
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-
                                         <StackPanel Grid.Column="0" Orientation="Horizontal">
                                             <ui:SymbolIcon Symbol="Book24" FontSize="24" Margin="0,0,16,0"/>
-                                            <TextBlock Text="{Binding CourseName}"
-                                                       FontSize="16"
-                                                       FontWeight="SemiBold"
-                                                       VerticalAlignment="Center"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <ui:SymbolIcon Symbol="People24" FontSize="16" Margin="0,0,8,0"/>
-                                            <TextBlock Text="{Binding EnrolledStudentsCount}"
-                                                       FontWeight="SemiBold"
-                                                       VerticalAlignment="Center"/>
+                                            <TextBlock Text="{Binding CourseName}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center"/>
                                         </StackPanel>
                                     </Grid>
                                 </ui:CardAction>
@@ -46,7 +35,33 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Тести курсів">
+            <!-- ВКЛАДКА: ЛЕКЦІЇ -->
+            <TabItem Header="Лекції">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
+                    <ItemsControl ItemsSource="{Binding AllLectures}">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <ui:Card Margin="0,4" Padding="16">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel>
+                                            <TextBlock Text="{Binding Title}" FontSize="15" FontWeight="Medium"/>
+                                            <TextBlock Text="{Binding CourseName}" FontSize="12" Foreground="Gray"/>
+                                        </StackPanel>
+                                        <ui:SymbolIcon Grid.Column="1" Symbol="Document24" FontSize="20"/>
+                                    </Grid>
+                                </ui:Card>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- ВКЛАДКА: ТЕСТИ -->
+            <TabItem Header="Тести">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
                     <ItemsControl ItemsSource="{Binding CourseTests}">
                         <ItemsControl.ItemTemplate>
@@ -57,44 +72,27 @@
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
                                         </Grid.RowDefinitions>
-                                        
                                         <Grid Grid.Row="0">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-
                                             <StackPanel Grid.Column="0" Orientation="Horizontal">
                                                 <ui:SymbolIcon Symbol="ClipboardTask24" FontSize="20" Margin="0,0,12,0"/>
-                                                <TextBlock Text="{Binding TestName}"
-                                                           FontSize="14"
-                                                           FontWeight="SemiBold"
-                                                           VerticalAlignment="Center"/>
+                                                <TextBlock Text="{Binding TestName}" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                                                <!-- ЗАМІНЕНО: AccentFillColorDefaultBrush -> RoyalBlue -->
                                                 <Border Visibility="{Binding IsFinalTest, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                                        Background="{DynamicResource AccentFillColorDefaultBrush}"
-                                                        CornerRadius="4"
-                                                        Padding="6,2"
-                                                        Margin="8,0,0,0"
-                                                        VerticalAlignment="Center">
-                                                    <TextBlock Text="Підсумковий" 
-                                                               FontSize="10"
-                                                               Foreground="White"
-                                                               FontWeight="Medium"/>
+                                                        Background="RoyalBlue"
+                                                        CornerRadius="4" Padding="6,2" Margin="8,0,0,0">
+                                                    <TextBlock Text="Підсумковий" FontSize="10" Foreground="White"/>
                                                 </Border>
                                             </StackPanel>
-
-                                            <CheckBox Grid.Column="1"
-                                                      Content="Підсумковий тест"
-                                                      IsChecked="{Binding IsFinalTest, Mode=TwoWay}"
+                                            <CheckBox Grid.Column="1" Content="Підсумковий" IsChecked="{Binding IsFinalTest, Mode=TwoWay}"
                                                       Command="{Binding DataContext.ToggleFinalTestCommand, RelativeSource={RelativeSource AncestorType=Page}}"
                                                       CommandParameter="{Binding}"/>
                                         </Grid>
-                                        
-                                        <TextBlock Grid.Row="1"
-                                                   Text="{Binding CourseName}"
-                                                   FontSize="12"
-                                                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                   Margin="32,4,0,0"/>
+                                        <!-- ЗАМІНЕНО: TextFillColorSecondaryBrush -> Gray -->
+                                        <TextBlock Grid.Row="1" Text="{Binding CourseName}" FontSize="12" Foreground="Gray" Margin="32,4,0,0"/>
                                     </Grid>
                                 </ui:Card>
                             </DataTemplate>
@@ -103,40 +101,42 @@
                 </ScrollViewer>
             </TabItem>
 
-            <TabItem Header="Успішність студентів">
-                <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="16">
-                    <ItemsControl ItemsSource="{Binding StudentsPerformance}">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <ui:CardAction Margin="0,4" Padding="16" Cursor="Hand">
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal">
-                                            <ui:SymbolIcon Symbol="Person24" FontSize="24" Margin="0,0,16,0"/>
-                                            <TextBlock Text="{Binding StudentName}"
-                                                       FontSize="16"
-                                                       VerticalAlignment="Center"/>
-                                        </StackPanel>
-
-                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
-                                            <TextBlock Text="Оцінка: "
-                                                       Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                       VerticalAlignment="Center"/>
-                                            <TextBlock Text="{Binding Grade}"
-                                                       FontWeight="SemiBold"
-                                                       FontSize="16"
-                                                       VerticalAlignment="Center"/>
-                                        </StackPanel>
-                                    </Grid>
-                                </ui:CardAction>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </ScrollViewer>
+            <!-- ВКЛАДКА: УСПІШНІСТЬ -->
+            <TabItem Header="Успішність">
+                <Grid Margin="16">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,12">
+                        <ui:Button Content="Ім'ям" Command="{Binding SortCommand}" CommandParameter="StudentName" Margin="2"/>
+                        <ui:Button Content="Курсом" Command="{Binding SortCommand}" CommandParameter="CourseName" Margin="2"/>
+                        <ui:Button Content="Оцінкою" Command="{Binding SortCommand}" CommandParameter="Grade" Margin="2"/>
+                    </StackPanel>
+                    <ScrollViewer Grid.Row="1">
+                        <ItemsControl ItemsSource="{Binding StudentsPerformance}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ui:Card Margin="0,2" Padding="12">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="{Binding StudentName}" VerticalAlignment="Center"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding CourseName}" Foreground="Gray" VerticalAlignment="Center"/>
+                                            <!-- ЗАМІНЕНО: AccentFillColorDefaultBrush -> RoyalBlue -->
+                                            <Border Grid.Column="2" Background="RoyalBlue" CornerRadius="4" Padding="8,2">
+                                                <TextBlock Text="{Binding Grade}" Foreground="White" FontWeight="Bold"/>
+                                            </Border>
+                                        </Grid>
+                                    </ui:Card>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
             </TabItem>
         </TabControl>
     </Grid>

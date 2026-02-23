@@ -10,7 +10,7 @@ namespace Courses
         public TeacherPage()
         {
             InitializeComponent();
-            DataContext = new TeacherViewModel();
+            DataContext = new Courses.ViewModels.TeacherPageViewModel();
         }
 
         private void CourseCard_Click(object sender, RoutedEventArgs e)
