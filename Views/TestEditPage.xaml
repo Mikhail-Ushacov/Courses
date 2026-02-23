@@ -1,0 +1,54 @@
+<Page x:Class="Courses.Views.TestEditPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+      Title="Редагування тесту">
+    <ScrollViewer Padding="24">
+        <StackPanel MaxWidth="800">
+            <TextBlock Text="Редагування тесту" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+            <ui:TextBox Text="{Binding TestName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Назва тесту" Margin="0,0,0,20"/>
+
+            <ItemsControl ItemsSource="{Binding Questions}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <ui:Card Margin="0,0,0,15" Padding="15">
+                            <StackPanel>
+                                <Grid>
+                                    <TextBlock Text="Питання" FontWeight="Bold"/>
+                                    <ui:Button Content="Видалити питання" Click="RemoveQuestion_Click" Appearance="Secondary" HorizontalAlignment="Right" Padding="5"/>
+                                </Grid>
+                                <ui:TextBox Text="{Binding QuestionText}" PlaceholderText="Текст питання" Margin="0,5,0,10"/>
+                                
+                                <TextBlock Text="Відповіді:" Margin="0,0,0,5" FontSize="12"/>
+                                <ItemsControl ItemsSource="{Binding Options}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="0,2">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <CheckBox IsChecked="{Binding IsCorrect}" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <ui:TextBox Grid.Column="1" Text="{Binding Text}" PlaceholderText="Текст відповіді"/>
+                                                <ui:Button Grid.Column="2" Content="✕" Click="RemoveOption_Click" Margin="5,0,0,0"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                                <ui:Button Content="Додати відповідь" Click="AddOption_Click" Margin="0,5,0,0" FontSize="12" HorizontalAlignment="Left"/>
+                            </StackPanel>
+                        </ui:Card>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <ui:Button Content="Додати питання" Command="{Binding AddQuestionCommand}" Margin="0,0,0,20"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <ui:Button Content="Скасувати" Click="Cancel_Click" Margin="0,0,10,0"/>
+                <ui:Button Content="Зберегти" Command="{Binding SaveCommand}" Appearance="Primary"/>
+            </StackPanel>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

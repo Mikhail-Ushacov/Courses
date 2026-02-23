@@ -32,7 +32,13 @@ namespace Courses
                 NavigateToPage(view);
             };
 
-            var initialPage = new Views.HomePage();
+            // ВИПРАВЛЕНО: Додано обробник для дії "Назад"
+            AppNavigationService.GoBackAction = () =>
+            {
+                BackButton_Click(this, new RoutedEventArgs());
+            };
+
+            var initialPage = new TeacherPage();
             NavigateToPage(initialPage);
             _currentPage = initialPage;
 

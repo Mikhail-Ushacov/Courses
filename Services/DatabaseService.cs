@@ -640,4 +640,82 @@ public void DeleteCourse(int courseId)
 
     return result;
 }
+
+public void DeleteLecture(int lectureId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    var cmd = new SqliteCommand("DELETE FROM Lectures WHERE LectureId = @id", conn);
+    cmd.Parameters.AddWithValue("@id", lectureId);
+    cmd.ExecuteNonQuery();
+}
+
+public void DeleteTest(int testId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    var cmd = new SqliteCommand("DELETE FROM Tests WHERE TestId = @id", conn);
+    cmd.Parameters.AddWithValue("@id", testId);
+    cmd.ExecuteNonQuery();
+}
+
+public void UpdateFinalGrade(int userId, int courseId, double newGrade)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    var cmd = new SqliteCommand("UPDATE Enrollments SET FinalGrade = @grade WHERE UserId = @uid AND CourseId = @cid", conn);
+    cmd.Parameters.AddWithValue("@grade", newGrade);
+    cmd.Parameters.AddWithValue("@uid", userId);
+    cmd.Parameters.AddWithValue("@cid", courseId);
+    cmd.ExecuteNonQuery();
+}
+
+public void DeleteEnrollment(int userId, int courseId)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    var cmd = new SqliteCommand("DELETE FROM Enrollments WHERE UserId = @uid AND CourseId = @cid", conn);
+    cmd.Parameters.AddWithValue("@uid", userId);
+    cmd.Parameters.AddWithValue("@cid", courseId);
+    cmd.ExecuteNonQuery();
+}
+
+// Метод для додавання/оновлення лекції в БД
+public int SaveLectureToDb(int courseId, string title, string filePath, int? lectureId = null)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    SqliteCommand cmd;
+    if (lectureId.HasValue) {
+        cmd = new SqliteCommand("UPDATE Lectures SET Title=@t, ContentFilePath=@p WHERE LectureId=@id", conn);
+        cmd.Parameters.AddWithValue("@id", lectureId.Value);
+    } else {
+        cmd = new SqliteCommand("INSERT INTO Lectures (CourseId, Title, ContentFilePath) VALUES (@cid, @t, @p); SELECT last_insert_rowid();", conn);
+        cmd.Parameters.AddWithValue("@cid", courseId);
+    }
+    cmd.Parameters.AddWithValue("@t", title);
+    cmd.Parameters.AddWithValue("@p", filePath);
+    
+    var result = cmd.ExecuteScalar();
+    return lectureId ?? Convert.ToInt32(result);
+}
+
+public int SaveTestToDb(int courseId, string name, string filePath, int? testId = null)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    SqliteCommand cmd;
+    if (testId.HasValue) {
+        cmd = new SqliteCommand("UPDATE Tests SET TestName=@n, ContentFilePath=@p WHERE TestId=@id", conn);
+        cmd.Parameters.AddWithValue("@id", testId.Value);
+    } else {
+        cmd = new SqliteCommand("INSERT INTO Tests (CourseId, TestName, ContentFilePath) VALUES (@cid, @n, @p); SELECT last_insert_rowid();", conn);
+        cmd.Parameters.AddWithValue("@cid", courseId);
+    }
+    cmd.Parameters.AddWithValue("@n", name);
+    cmd.Parameters.AddWithValue("@p", filePath);
+    
+    var result = cmd.ExecuteScalar();
+    return testId ?? Convert.ToInt32(result);
+}
 }

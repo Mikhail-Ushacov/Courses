@@ -11,9 +11,9 @@ namespace Courses
     public partial class MainWindow : FluentWindow
     {
         private MainViewModel _viewModel;
-    private readonly Stack<object> _navigationHistory = new Stack<object>();
-    private readonly Stack<object> _forwardHistory = new Stack<object>();
-    private object _currentPage;
+        private readonly Stack<object> _navigationHistory = new Stack<object>();
+        private readonly Stack<object> _forwardHistory = new Stack<object>();
+        private object _currentPage;
 
         public MainWindow()
         {
@@ -30,6 +30,12 @@ namespace Courses
                 _forwardHistory.Clear();
                 
                 NavigateToPage(view);
+            };
+
+            // ВИПРАВЛЕНО: Додано обробник для дії "Назад"
+            AppNavigationService.GoBackAction = () =>
+            {
+                BackButton_Click(this, new RoutedEventArgs());
             };
 
             var initialPage = new Views.HomePage();

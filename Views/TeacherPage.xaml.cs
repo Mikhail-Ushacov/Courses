@@ -11,6 +11,16 @@ namespace Courses
         {
             InitializeComponent();
             DataContext = new Courses.ViewModels.TeacherPageViewModel();
+            
+            this.Loaded += TeacherPage_Loaded;
+        }
+
+        private void TeacherPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            if (DataContext is Courses.ViewModels.TeacherPageViewModel vm)
+            {
+                vm.LoadData();
+            }
         }
 
         private void CourseCard_Click(object sender, RoutedEventArgs e)

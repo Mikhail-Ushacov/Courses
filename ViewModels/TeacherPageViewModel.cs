@@ -1,9 +1,12 @@
-﻿using System.Collections.ObjectModel;
+﻿using Courses.Models;
+using Courses.Services;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
+using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
-using Courses.Models;
-using Courses.Services;
+using Courses.Views;
 
 namespace Courses.ViewModels
 {
@@ -16,25 +19,10 @@ namespace Courses.ViewModels
         private ObservableCollection<StudentPerformanceDisplay> _studentsPerformance;
         private ICollectionView _performanceView;
 
-        public ICollectionView StudentsPerformanceView
+        public ObservableCollection<Course> ManagedCourses
         {
-            get => _performanceView;
-            private set
-            {
-                _performanceView = value;
-                OnPropertyChanged(nameof(StudentsPerformanceView));
-            }
-        }
-
-        public ObservableCollection<StudentPerformanceDisplay> StudentsPerformance
-        {
-            get => _studentsPerformance;
-            set
-            {
-                _studentsPerformance = value;
-                StudentsPerformanceView = CollectionViewSource.GetDefaultView(_studentsPerformance);
-                OnPropertyChanged(nameof(StudentsPerformance));
-            }
+            get => _managedCourses;
+            set { _managedCourses = value; OnPropertyChanged(nameof(ManagedCourses)); }
         }
 
         public ObservableCollection<LectureDisplay> AllLectures
@@ -49,84 +37,117 @@ namespace Courses.ViewModels
             set { _courseTests = value; OnPropertyChanged(nameof(CourseTests)); }
         }
 
-        public ObservableCollection<Course> ManagedCourses
+        public ObservableCollection<StudentPerformanceDisplay> StudentsPerformance
         {
-            get => _managedCourses;
-            set { _managedCourses = value; OnPropertyChanged(nameof(ManagedCourses)); }
+            get => _studentsPerformance;
+            set
+            {
+                _studentsPerformance = value;
+                StudentsPerformanceView = CollectionViewSource.GetDefaultView(_studentsPerformance);
+                OnPropertyChanged(nameof(StudentsPerformance));
+            }
         }
 
-        public ICommand SortCommand { get; }
+        public ICollectionView StudentsPerformanceView
+        {
+            get => _performanceView;
+            private set { _performanceView = value; OnPropertyChanged(nameof(StudentsPerformanceView)); }
+        }
+
+        // Команди
+        public ICommand NavigateToAddLectureCommand { get; }
+        public ICommand NavigateToEditLectureCommand { get; }
+        public ICommand DeleteLectureCommand { get; }
+        public ICommand NavigateToAddTestCommand { get; }
+        public ICommand NavigateToEditTestCommand { get; }
+        public ICommand DeleteTestCommand { get; }
         public ICommand ToggleFinalTestCommand { get; }
+        public ICommand EditGradeCommand { get; }
+        public ICommand SortCommand { get; }
 
         public TeacherPageViewModel()
         {
             _databaseService = new DatabaseService();
-            SortCommand = new RelayCommand(SortPerformance);
+
+            // Навігація для Лекцій
+            NavigateToAddLectureCommand = new RelayCommand(_ => {
+                var course = ManagedCourses.FirstOrDefault();
+                if (course != null) AppNavigationService.Navigate(new LectureEditPage(course.CourseId));
+                else MessageBox.Show("У вас немає курсів для додавання лекцій.");
+            });
+
+            NavigateToEditLectureCommand = new RelayCommand(param => {
+                if (param is LectureDisplay lecture) 
+                    AppNavigationService.Navigate(new LectureEditPage(lecture.CourseId, lecture.LectureId));
+            });
+
+            // Навігація для Тестів
+            NavigateToAddTestCommand = new RelayCommand(_ => {
+                var course = ManagedCourses.FirstOrDefault();
+                if (course != null) AppNavigationService.Navigate(new TestEditPage(course.CourseId));
+                else MessageBox.Show("У вас немає курсів для додавання тестів.");
+            });
+
+            NavigateToEditTestCommand = new RelayCommand(param => {
+                if (param is CourseTestDisplay test)
+                    AppNavigationService.Navigate(new TestEditPage(test.CourseId, test.TestId));
+            });
+
+            // Видалення
+            DeleteLectureCommand = new RelayCommand(param => {
+                if (param is LectureDisplay lecture) {
+                    _databaseService.DeleteLecture(lecture.LectureId);
+                    LoadData();
+                }
+            });
+
+            DeleteTestCommand = new RelayCommand(param => {
+                if (param is CourseTestDisplay test) {
+                    _databaseService.DeleteTest(test.TestId);
+                    LoadData();
+                }
+            });
+
             ToggleFinalTestCommand = new RelayCommand(ToggleFinalTest);
+            EditGradeCommand = new RelayCommand(EditGrade);
+            SortCommand = new RelayCommand(SortPerformance);
+
             LoadData();
         }
 
-        private void LoadData()
+        public void LoadData()
         {
             if (CurrentUser.User == null) return;
-
             int teacherId = CurrentUser.User.UserId;
 
-            // 1. Завантажуємо курси саме цього викладача
             var courses = _databaseService.GetCoursesByTeacher(teacherId);
             ManagedCourses = new ObservableCollection<Course>(courses);
 
             var lecturesList = new List<LectureDisplay>();
             var testsList = new List<CourseTestDisplay>();
-            var performanceList = new List<StudentPerformanceDisplay>();
+            var perfList = new List<StudentPerformanceDisplay>();
 
             foreach (var course in courses)
             {
-                // 2. Завантажуємо Лекції
                 var lectures = _databaseService.GetLecturesByCourseId(course.CourseId);
-                foreach (var l in lectures)
-                {
-                    lecturesList.Add(new LectureDisplay
-                    {
-                        Title = l.Title,
-                        CourseName = course.CourseName,
-                        FilePath = l.ContentFilePath
-                    });
-                }
+                foreach (var l in lectures) lecturesList.Add(new LectureDisplay { 
+                    LectureId = l.LectureId, CourseId = l.CourseId, Title = l.Title, CourseName = course.CourseName 
+                });
 
-                // 3. Завантажуємо Тести
                 var tests = _databaseService.GetTestsByCourseId(course.CourseId);
-                foreach (var t in tests)
-                {
-                    testsList.Add(new CourseTestDisplay
-                    {
-                        TestId = t.TestId,
-                        CourseId = t.CourseId,
-                        TestName = t.TestName,
-                        CourseName = course.CourseName,
-                        IsFinalTest = t.IsFinalTest
-                    });
-                }
+                foreach (var t in tests) testsList.Add(new CourseTestDisplay { 
+                    TestId = t.TestId, CourseId = t.CourseId, TestName = t.TestName, CourseName = course.CourseName, IsFinalTest = t.IsFinalTest 
+                });
 
-                // 4. Завантажуємо Успішність (тільки завершені)
-                var studentGrades = _databaseService.GetStudentsByCourse(course.CourseId);
-                foreach (var sg in studentGrades)
-                {
-                    if (sg.grade.HasValue)
-                    {
-                        performanceList.Add(new StudentPerformanceDisplay
-                        {
-                            StudentName = sg.student.Username,
-                            CourseName = course.CourseName,
-                            Grade = sg.grade.Value
-                        });
-                    }
-                }
+                var students = _databaseService.GetStudentsByCourse(course.CourseId);
+                foreach (var s in students) perfList.Add(new StudentPerformanceDisplay {
+                    UserId = s.student.UserId, CourseId = course.CourseId, StudentName = s.student.Username, CourseName = course.CourseName, Grade = s.grade ?? 0
+                });
             }
 
             AllLectures = new ObservableCollection<LectureDisplay>(lecturesList);
             CourseTests = new ObservableCollection<CourseTestDisplay>(testsList);
-            StudentsPerformance = new ObservableCollection<StudentPerformanceDisplay>(performanceList);
+            StudentsPerformance = new ObservableCollection<StudentPerformanceDisplay>(perfList);
         }
 
         private void ToggleFinalTest(object? parameter)
@@ -135,47 +156,42 @@ namespace Courses.ViewModels
             {
                 if (test.IsFinalTest)
                 {
-                    var success = _databaseService.SetTestAsFinal(test.CourseId, test.TestId);
-                    if (!success)
+                    if (!_databaseService.SetTestAsFinal(test.CourseId, test.TestId))
                     {
                         test.IsFinalTest = false;
-                        System.Windows.MessageBox.Show("Цей курс вже має підсумковий тест. Спочатку зніміть позначку з іншого тесту.",
-                            "Попередження", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                        MessageBox.Show("Цей курс вже має підсумковий тест.");
                     }
                 }
-                else
+                else _databaseService.UnsetFinalTest(test.CourseId, test.TestId);
+            }
+        }
+
+        private void EditGrade(object? parameter)
+        {
+            if (parameter is StudentPerformanceDisplay perf)
+            {
+                string input = Microsoft.VisualBasic.Interaction.InputBox($"Нова оцінка для {perf.StudentName}:", "Редагування", perf.Grade.ToString());
+                if (double.TryParse(input, out double val))
                 {
-                    _databaseService.UnsetFinalTest(test.CourseId, test.TestId);
+                    _databaseService.UpdateFinalGrade(perf.UserId, perf.CourseId, val);
+                    LoadData();
                 }
             }
         }
 
-        private void SortPerformance(object parameter)
+        private void SortPerformance(object? parameter)
         {
-            string column = parameter as string;
-            if (string.IsNullOrEmpty(column) || _performanceView == null) return;
-
-            var currentSort = _performanceView.SortDescriptions.FirstOrDefault(s => s.PropertyName == column);
-            
-            _performanceView.SortDescriptions.Clear();
-            
-            if (currentSort.PropertyName != column)
+            if (parameter is string column && StudentsPerformanceView != null)
             {
-                _performanceView.SortDescriptions.Add(new SortDescription(column, ListSortDirection.Ascending));
+                var sd = StudentsPerformanceView.SortDescriptions;
+                var dir = sd.Count > 0 && sd[0].PropertyName == column && sd[0].Direction == ListSortDirection.Ascending 
+                    ? ListSortDirection.Descending : ListSortDirection.Ascending;
+                sd.Clear();
+                sd.Add(new SortDescription(column, dir));
             }
-            else if (currentSort.Direction == ListSortDirection.Ascending)
-            {
-                _performanceView.SortDescriptions.Add(new SortDescription(column, ListSortDirection.Descending));
-            }
-            else
-            {
-                
-            }
-            
-            _performanceView.Refresh();
         }
 
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
 }
