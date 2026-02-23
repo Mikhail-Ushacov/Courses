@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using Courses.Services;
@@ -10,6 +11,9 @@ namespace Courses
     public partial class MainWindow : FluentWindow
     {
         private MainViewModel _viewModel;
+    private readonly Stack<object> _navigationHistory = new Stack<object>();
+    private readonly Stack<object> _forwardHistory = new Stack<object>();
+    private object _currentPage;
 
         public MainWindow()
         {
@@ -18,10 +22,19 @@ namespace Courses
 
             AppNavigationService.NavigateAction = view =>
             {
-                MainFrame.Content = view;
+                if (_currentPage != null)
+                {
+                    _navigationHistory.Push(_currentPage);
+                }
+                
+                _forwardHistory.Clear();
+                
+                NavigateToPage(view);
             };
 
-            MainFrame.Content = new Views.HomePage();
+            var initialPage = new Views.HomePage();
+            NavigateToPage(initialPage);
+            _currentPage = initialPage;
 
             try
             {
@@ -68,6 +81,37 @@ namespace Courses
 
             var contentInitializer = new ContentInitializer(connectionString);
             contentInitializer.SeedInitialData();
+        }
+        
+        private void NavigateToPage(object page)
+        {
+            MainFrame.Content = page;
+            _currentPage = page;
+            
+            BackButton.IsEnabled = _navigationHistory.Count > 0;
+            ForwardButton.IsEnabled = _forwardHistory.Count > 0;
+        }
+        
+        private void BackButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_navigationHistory.Count > 0)
+            {
+                _forwardHistory.Push(_currentPage);
+                
+                var previousPage = _navigationHistory.Pop();
+                NavigateToPage(previousPage);
+            }
+        }
+        
+        private void ForwardButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_forwardHistory.Count > 0)
+            {
+                _navigationHistory.Push(_currentPage);
+                
+                var nextPage = _forwardHistory.Pop();
+                NavigateToPage(nextPage);
+            }
         }
     }
 }

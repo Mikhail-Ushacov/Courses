@@ -18,7 +18,32 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <ui:TitleBar Grid.Row="0" Title="Освітня Система"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Top" Margin="8,8,0,0">
+                <ui:Button x:Name="BackButton" 
+                           Icon="{ui:SymbolIcon ArrowLeft24}" 
+                           Click="BackButton_Click"
+                           Margin="0,0,8,0"
+                           ToolTip="Назад"
+                           Appearance="Transparent"
+                           BorderThickness="0"
+                           Background="Transparent"/>
+                <ui:Button x:Name="ForwardButton" 
+                           Icon="{ui:SymbolIcon ArrowRight24}" 
+                           Click="ForwardButton_Click"
+                           ToolTip="Вперед"
+                           Appearance="Transparent"
+                           BorderThickness="0"
+                           Background="Transparent"/>
+            </StackPanel>
+            
+            <ui:TitleBar Grid.Column="1" Title="Освітня Система"/>
+        </Grid>
 
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
