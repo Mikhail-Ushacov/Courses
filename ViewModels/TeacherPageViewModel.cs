@@ -153,19 +153,4 @@ namespace Courses.ViewModels
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name) => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
     }
-
-    // Допоміжні класи моделей для відображення
-    public class StudentPerformanceDisplay
-    {
-        public string StudentName { get; set; } = string.Empty;
-        public string CourseName { get; set; } = string.Empty;
-        public double Grade { get; set; }
-    }
-
-    public class LectureDisplay
-    {
-        public string Title { get; set; } = string.Empty;
-        public string CourseName { get; set; } = string.Empty;
-        public string FilePath { get; set; } = string.Empty;
-    }
 }
