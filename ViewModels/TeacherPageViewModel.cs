@@ -16,10 +16,25 @@ namespace Courses.ViewModels
         private ObservableCollection<StudentPerformanceDisplay> _studentsPerformance;
         private ICollectionView _performanceView;
 
-        public ObservableCollection<Course> ManagedCourses
+        public ICollectionView StudentsPerformanceView
         {
-            get => _managedCourses;
-            set { _managedCourses = value; OnPropertyChanged(nameof(ManagedCourses)); }
+            get => _performanceView;
+            private set
+            {
+                _performanceView = value;
+                OnPropertyChanged(nameof(StudentsPerformanceView));
+            }
+        }
+
+        public ObservableCollection<StudentPerformanceDisplay> StudentsPerformance
+        {
+            get => _studentsPerformance;
+            set
+            {
+                _studentsPerformance = value;
+                StudentsPerformanceView = CollectionViewSource.GetDefaultView(_studentsPerformance);
+                OnPropertyChanged(nameof(StudentsPerformance));
+            }
         }
 
         public ObservableCollection<LectureDisplay> AllLectures
@@ -34,15 +49,10 @@ namespace Courses.ViewModels
             set { _courseTests = value; OnPropertyChanged(nameof(CourseTests)); }
         }
 
-        public ObservableCollection<StudentPerformanceDisplay> StudentsPerformance
+        public ObservableCollection<Course> ManagedCourses
         {
-            get => _studentsPerformance;
-            set
-            {
-                _studentsPerformance = value;
-                _performanceView = CollectionViewSource.GetDefaultView(_studentsPerformance);
-                OnPropertyChanged(nameof(StudentsPerformance));
-            }
+            get => _managedCourses;
+            set { _managedCourses = value; OnPropertyChanged(nameof(ManagedCourses)); }
         }
 
         public ICommand SortCommand { get; }
@@ -145,8 +155,23 @@ namespace Courses.ViewModels
             string column = parameter as string;
             if (string.IsNullOrEmpty(column) || _performanceView == null) return;
 
+            var currentSort = _performanceView.SortDescriptions.FirstOrDefault(s => s.PropertyName == column);
+            
             _performanceView.SortDescriptions.Clear();
-            _performanceView.SortDescriptions.Add(new SortDescription(column, ListSortDirection.Ascending));
+            
+            if (currentSort.PropertyName != column)
+            {
+                _performanceView.SortDescriptions.Add(new SortDescription(column, ListSortDirection.Ascending));
+            }
+            else if (currentSort.Direction == ListSortDirection.Ascending)
+            {
+                _performanceView.SortDescriptions.Add(new SortDescription(column, ListSortDirection.Descending));
+            }
+            else
+            {
+                
+            }
+            
             _performanceView.Refresh();
         }
 
