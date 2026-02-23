@@ -58,19 +58,21 @@
                                 Margin="0,0,0,14"
                                 Icon="{ui:SymbolIcon Person24}"/>
 
-                    <PasswordBox x:Name="PasswordBox"
-                                 FontSize="14"
-                                 Height="40"
-                                 Margin="0,0,0,14"
-                                 PasswordChanged="PasswordBox_PasswordChanged"
-                                 Style="{DynamicResource DefaultPasswordBoxStyle}"/>
+                    <ui:PasswordBox x:Name="PasswordBox"
+                                    PlaceholderText="Пароль"
+                                    FontSize="14"
+                                    Height="40"
+                                    Margin="0,0,0,14"
+                                    PasswordChanged="PasswordBox_PasswordChanged"
+                                    Icon="{ui:SymbolIcon LockClosed24}"/>
 
-                    <PasswordBox x:Name="ConfirmPasswordBox"
-                                 FontSize="14"
-                                 Height="40"
-                                 Margin="0,0,0,8"
-                                 PasswordChanged="ConfirmPasswordBox_PasswordChanged"
-                                 Style="{DynamicResource DefaultPasswordBoxStyle}"/>
+                    <ui:PasswordBox x:Name="ConfirmPasswordBox"
+                                    PlaceholderText="Підтвердіть пароль"
+                                    FontSize="14"
+                                    Height="40"
+                                    Margin="0,0,0,8"
+                                    PasswordChanged="ConfirmPasswordBox_PasswordChanged"
+                                    Icon="{ui:SymbolIcon LockClosed24}"/>
 
                     <ui:InfoBar Title="{Binding ErrorMessage}"
                                 Severity="Error"
