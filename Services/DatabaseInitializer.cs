@@ -20,8 +20,6 @@ public class DatabaseInitializer
         CreateCourses(connection);
         CreateLectures(connection);
         CreateTests(connection);
-        CreateQuestions(connection);
-        CreateAnswerOptions(connection);
         CreateEnrollments(connection);
         CreateTestResults(connection);
         AddTestColumns(connection);
@@ -114,33 +112,6 @@ public class DatabaseInitializer
             AvailableFrom TEXT,
             AvailableUntil TEXT,
             FOREIGN KEY (CourseId) REFERENCES Courses(CourseId) ON DELETE CASCADE
-        );";
-
-        new SqliteCommand(sql, connection).ExecuteNonQuery();
-    }
-
-    private void CreateQuestions(SqliteConnection connection)
-    {
-        string sql = @"
-        CREATE TABLE IF NOT EXISTS Questions (
-            QuestionId INTEGER PRIMARY KEY AUTOINCREMENT,
-            TestId INTEGER NOT NULL,
-            QuestionText TEXT NOT NULL,
-            FOREIGN KEY (TestId) REFERENCES Tests(TestId) ON DELETE CASCADE
-        );";
-
-        new SqliteCommand(sql, connection).ExecuteNonQuery();
-    }
-
-    private void CreateAnswerOptions(SqliteConnection connection)
-    {
-        string sql = @"
-        CREATE TABLE IF NOT EXISTS AnswerOptions (
-            AnswerId INTEGER PRIMARY KEY AUTOINCREMENT,
-            QuestionId INTEGER NOT NULL,
-            AnswerText TEXT NOT NULL,
-            Points INTEGER NOT NULL,
-            FOREIGN KEY (QuestionId) REFERENCES Questions(QuestionId) ON DELETE CASCADE
         );";
 
         new SqliteCommand(sql, connection).ExecuteNonQuery();
