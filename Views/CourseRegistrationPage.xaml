@@ -7,20 +7,43 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <TextBlock Text="Доступні курси"
-                   FontSize="28"
-                   FontWeight="Bold"
-                   Margin="0,0,0,24"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <ui:ListView Grid.Row="1"
-                     ItemsSource="{Binding AvailableCourses}">
+            <ui:Button Click="BackButton_Click"
+                       Appearance="Transparent"
+                       Padding="8"
+                       Margin="0,0,16,0">
+                <ui:SymbolIcon Symbol="ArrowLeft24" FontSize="20"/>
+            </ui:Button>
+
+            <TextBlock Grid.Column="1"
+                       Text="Доступні курси"
+                       FontSize="28"
+                       FontWeight="Bold"
+                       VerticalAlignment="Center"/>
+        </Grid>
+
+        <TextBlock Grid.Row="1"
+                   Text="Оберіть курс для реєстрації"
+                   FontSize="14"
+                   Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                   Margin="0,8,0,16"/>
+
+        <ui:ListView Grid.Row="2"
+                     ItemsSource="{Binding AvailableCourses}"
+                     SelectedItem="{Binding SelectedCourse, Mode=TwoWay}"
+                     SelectionMode="Single">
             <ui:ListView.ItemTemplate>
                 <DataTemplate>
-                    <ui:CardAction Margin="0,4" Padding="16">
+                    <ui:CardAction Margin="0,4" Padding="16" Cursor="Hand">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
@@ -35,22 +58,22 @@
                                                FontWeight="SemiBold"/>
                                     <TextBlock Text="{Binding Instructor, StringFormat='Викладач: {0}'}"
                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                               FontSize="13"/>
+                                               FontSize="13"
+                                               Margin="0,4,0,0"/>
                                 </StackPanel>
                             </StackPanel>
+
+                            <ui:Button Grid.Column="1"
+                                       Content="Зареєструватися"
+                                       Command="{Binding DataContext.RegisterCommand, RelativeSource={RelativeSource AncestorType=ui:ListView}}"
+                                       CommandParameter="{Binding}"
+                                       Appearance="Primary"
+                                       Padding="16,8"
+                                       Margin="16,0,0,0"/>
                         </Grid>
                     </ui:CardAction>
                 </DataTemplate>
             </ui:ListView.ItemTemplate>
         </ui:ListView>
-
-        <ui:Button Grid.Row="2"
-                   Content="Зареєструватися"
-                   Command="{Binding RegisterCommand}"
-                   Appearance="Primary"
-                   FontSize="16"
-                   HorizontalAlignment="Right"
-                   Margin="0,24,0,0"
-                   Padding="24,12"/>
     </Grid>
 </Page>

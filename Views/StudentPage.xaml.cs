@@ -23,5 +23,10 @@ namespace Courses
                 AppNavigationService.Navigate(new CoursePage(selectedCourse.CourseId));
             }
         }
+
+        private void RegisterButton_Click(object sender, RoutedEventArgs e)
+        {
+            AppNavigationService.Navigate(new CourseRegistrationPage());
+        }
     }
 }
