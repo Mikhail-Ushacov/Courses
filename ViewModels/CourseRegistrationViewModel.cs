@@ -1,5 +1,6 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Input;
 using Courses.Services;
 using Courses.Models;
@@ -43,8 +44,14 @@ public class CourseRegistrationViewModel : INotifyPropertyChanged
 
     private void LoadAvailableCourses()
     {
-        var courses = _databaseService.GetCourses();
-        AvailableCourses = new ObservableCollection<Course>(courses);
+        var userId = CurrentUser.User?.UserId ?? 0;
+        var allCourses = _databaseService.GetCourses();
+        var enrolledCourses = _databaseService.GetEnrolledCourses(userId);
+        
+        var enrolledCourseIds = new HashSet<int>(enrolledCourses.Select(c => c.CourseId));
+        var availableCoursesList = allCourses.Where(c => !enrolledCourseIds.Contains(c.CourseId)).ToList();
+        
+        AvailableCourses = new ObservableCollection<Course>(availableCoursesList);
     }
 
     private void RegisterForCourse(object? parameter)
