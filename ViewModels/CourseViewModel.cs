@@ -2,11 +2,13 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Wpf.Ui.Controls;
 using Courses;
+using Courses.Services;
 
 public class CourseViewModel
 {
     private readonly DatabaseService _databaseService;
     private readonly AccessControlService _accessService;
+    private readonly IMessageBoxService _messageBoxService;
     private readonly int _userId;
     private readonly int _courseId;
 
@@ -20,6 +22,7 @@ public class CourseViewModel
     {
         _databaseService = new DatabaseService();
         _accessService = new AccessControlService();
+        _messageBoxService = new MessageBoxService();
         _userId = userId;
         _courseId = courseId;
 
@@ -39,7 +42,7 @@ public class CourseViewModel
         {
             if (!_accessService.IsAvailableNow(lecture.AvailableFrom, lecture.AvailableUntil))
             {
-                await ShowMessageAsync("Недоступно", "Лекція недоступна у цей час");
+                await _messageBoxService.ShowMessageAsync("Недоступно", "Лекція недоступна у цей час");
                 return;
             }
 
@@ -53,34 +56,23 @@ public class CourseViewModel
         {
             if (test.IsCompleted)
             {
-                await ShowMessageAsync("Завершено", "Тест вже пройдено");
+                await _messageBoxService.ShowMessageAsync("Завершено", "Тест вже пройдено");
                 return;
             }
 
             if (!_accessService.IsAvailableNow(test.AvailableFrom, test.AvailableUntil))
             {
-                await ShowMessageAsync("Недоступно", "Тест недоступний у цей час");
+                await _messageBoxService.ShowMessageAsync("Недоступно", "Тест недоступний у цей час");
                 return;
             }
 
             if (test.IsFinalTest && !_databaseService.AllCourseTestsCompleted(_userId, test.CourseId))
             {
-                await ShowMessageAsync("Заблоковано", "Спочатку пройдіть усі тести курсу");
+                await _messageBoxService.ShowMessageAsync("Заблоковано", "Спочатку пройдіть усі тести курсу");
                 return;
             }
 
             AppNavigationService.Navigate(new TestPage(test.TestId, _userId, test.CourseId));
         }
-    }
-
-    private static async System.Threading.Tasks.Task ShowMessageAsync(string title, string message)
-    {
-        var messageBox = new MessageBox
-        {
-            Title = title,
-            Content = message,
-            CloseButtonText = "OK"
-        };
-        await messageBox.ShowDialogAsync();
     }
 }

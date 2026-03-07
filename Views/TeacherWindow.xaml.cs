@@ -5,6 +5,7 @@ using Courses.Services;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Courses
 {
@@ -51,14 +52,18 @@ namespace Courses
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Помилка під час запуску програми: {ex.Message}\n\n" +
-                                $"Спробуйте перезапустити програму або перевірте права доступу до папки AppData.",
-                                "Критична помилка ініціалізації",
-                                System.Windows.MessageBoxButton.OK,
-                                System.Windows.MessageBoxImage.Error);
-
-                Application.Current.Shutdown();
+                _ = ShowErrorAndShutdown(ex);
             }
+        }
+
+        private async Task ShowErrorAndShutdown(Exception ex)
+        {
+            var messageBoxService = new MessageBoxService();
+            await messageBoxService.ShowMessageAsync("Критична помилка ініціалізації", 
+                $"Помилка під час запуску програми: {ex.Message}\n\n" +
+                $"Спробуйте перезапустити програму або перевірте права доступу до папки AppData.");
+
+            Application.Current.Shutdown();
         }
 
         private void LogoutButton_Click(object sender, RoutedEventArgs e)

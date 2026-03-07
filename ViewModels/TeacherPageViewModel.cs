@@ -1,4 +1,4 @@
-﻿using Courses.Models;
+using Courses.Models;
 using Courses.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -7,12 +7,14 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Courses.Views;
+using Wpf.Ui.Controls;
 
 namespace Courses.ViewModels
 {
     public class TeacherPageViewModel : INotifyPropertyChanged
     {
         private readonly DatabaseService _databaseService;
+        private readonly IMessageBoxService _messageBoxService;
         private ObservableCollection<Course> _managedCourses;
         private ObservableCollection<LectureDisplay> _allLectures;
         private ObservableCollection<CourseTestDisplay> _courseTests;
@@ -68,12 +70,13 @@ namespace Courses.ViewModels
         public TeacherPageViewModel()
         {
             _databaseService = new DatabaseService();
+            _messageBoxService = new MessageBoxService();
 
             // Навігація для Лекцій
-            NavigateToAddLectureCommand = new RelayCommand(_ => {
+            NavigateToAddLectureCommand = new RelayCommand(async _ => {
                 var course = ManagedCourses.FirstOrDefault();
                 if (course != null) AppNavigationService.Navigate(new LectureEditPage(course.CourseId));
-                else MessageBox.Show("У вас немає курсів для додавання лекцій.");
+                else await _messageBoxService.ShowMessageAsync("Інформація", "У вас немає курсів для додавання лекцій.");
             });
 
             NavigateToEditLectureCommand = new RelayCommand(param => {
@@ -82,10 +85,10 @@ namespace Courses.ViewModels
             });
 
             // Навігація для Тестів
-            NavigateToAddTestCommand = new RelayCommand(_ => {
+            NavigateToAddTestCommand = new RelayCommand(async _ => {
                 var course = ManagedCourses.FirstOrDefault();
                 if (course != null) AppNavigationService.Navigate(new TestEditPage(course.CourseId));
-                else MessageBox.Show("У вас немає курсів для додавання тестів.");
+                else await _messageBoxService.ShowMessageAsync("Інформація", "У вас немає курсів для додавання тестів.");
             });
 
             NavigateToEditTestCommand = new RelayCommand(param => {
@@ -150,7 +153,7 @@ namespace Courses.ViewModels
             StudentsPerformance = new ObservableCollection<StudentPerformanceDisplay>(perfList);
         }
 
-        private void ToggleFinalTest(object? parameter)
+        private async void ToggleFinalTest(object? parameter)
         {
             if (parameter is CourseTestDisplay test)
             {
@@ -159,7 +162,7 @@ namespace Courses.ViewModels
                     if (!_databaseService.SetTestAsFinal(test.CourseId, test.TestId))
                     {
                         test.IsFinalTest = false;
-                        MessageBox.Show("Цей курс вже має підсумковий тест.");
+                        await _messageBoxService.ShowMessageAsync("Попередження", "Цей курс вже має підсумковий тест.");
                     }
                 }
                 else _databaseService.UnsetFinalTest(test.CourseId, test.TestId);

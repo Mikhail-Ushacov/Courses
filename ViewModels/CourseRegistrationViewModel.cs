@@ -11,6 +11,7 @@ public class CourseRegistrationViewModel : INotifyPropertyChanged
     private Course? selectedCourse;
     private readonly DatabaseService _databaseService;
     private readonly RegistrationService _registrationService;
+    private readonly IMessageBoxService _messageBoxService;
 
     public ObservableCollection<Course> AvailableCourses
     {
@@ -38,6 +39,7 @@ public class CourseRegistrationViewModel : INotifyPropertyChanged
     {
         _databaseService = new DatabaseService();
         _registrationService = new RegistrationService();
+        _messageBoxService = new MessageBoxService();
         RegisterCommand = new RelayCommand(RegisterForCourse);
         LoadAvailableCourses();
     }
@@ -54,7 +56,7 @@ public class CourseRegistrationViewModel : INotifyPropertyChanged
         AvailableCourses = new ObservableCollection<Course>(availableCoursesList);
     }
 
-    private void RegisterForCourse(object? parameter)
+    private async void RegisterForCourse(object? parameter)
     {
         if (parameter is not Course course) return;
 
@@ -63,22 +65,18 @@ public class CourseRegistrationViewModel : INotifyPropertyChanged
         
         if (isRegistered)
         {
-            System.Windows.MessageBox.Show(
-                $"Ви успішно зареєстровані на курс \"{course.CourseName}\"!",
+            await _messageBoxService.ShowMessageAsync(
                 "Реєстрація успішна",
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Information);
+                $"Ви успішно зареєстровані на курс \"{course.CourseName}\"!");
             
             LoadAvailableCourses();
             SelectedCourse = null;
         }
         else
         {
-            System.Windows.MessageBox.Show(
-                $"Ви вже зареєстровані на курс \"{course.CourseName}\".",
+            await _messageBoxService.ShowMessageAsync(
                 "Помилка реєстрації",
-                System.Windows.MessageBoxButton.OK,
-                System.Windows.MessageBoxImage.Warning);
+                $"Ви вже зареєстровані на курс \"{course.CourseName}\".");
         }
     }
 

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Courses.Services;
 using Courses.Models;
 using Courses.Views;
+using Wpf.Ui.Controls;
 
 public class CourseTestDisplay : INotifyPropertyChanged
 {
@@ -32,6 +33,7 @@ public class TeacherViewModel : INotifyPropertyChanged
     private ObservableCollection<Course> availableCourses;
     private ObservableCollection<CourseTestDisplay> courseTests;
     private readonly DatabaseService _databaseService;
+    private readonly IMessageBoxService _messageBoxService;
     private string _welcomeMessage = "Мій Кабінет";
 
     public ObservableCollection<Course> AvailableCourses
@@ -71,6 +73,7 @@ public class TeacherViewModel : INotifyPropertyChanged
     public TeacherViewModel()
     {
         _databaseService = new DatabaseService();
+        _messageBoxService = new MessageBoxService();
 
         GoToTeacherPageCommand = new RelayCommand(_ => GoToTeacherPage());
         GoToStudentListPageCommand = new RelayCommand(_ => GoToStudentListPage());
@@ -126,7 +129,7 @@ public class TeacherViewModel : INotifyPropertyChanged
         CourseTests = new ObservableCollection<CourseTestDisplay>(tests);
     }
 
-    private void ToggleFinalTest(object? parameter)
+    private async void ToggleFinalTest(object? parameter)
     {
         if (parameter is CourseTestDisplay test)
         {
@@ -136,8 +139,7 @@ public class TeacherViewModel : INotifyPropertyChanged
                 if (!success)
                 {
                     test.IsFinalTest = false;
-                    System.Windows.MessageBox.Show("Цей курс вже має підсумковий тест. Спочатку зніміть позначку з іншого тесту.", 
-                        "Попередження", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Warning);
+                    await _messageBoxService.ShowMessageAsync("Попередження", "Цей курс вже має підсумковий тест. Спочатку зніміть позначку з іншого тесту.");
                 }
             }
             else
