@@ -20,6 +20,7 @@
         <ui:TitleBar Grid.Row="0" Title="Панель Адміністратора"/>
 
         <TabControl Grid.Row="1" Margin="16">
+            <!-- 1. Користувачі -->
             <TabItem Header="Користувачі">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
@@ -28,40 +29,31 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <ui:TextBox Width="180" Margin="8,0"
-                                    PlaceholderText="Логін"
-                                    Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}"/>
-                        <PasswordBox x:Name="PasswordBox"
-                                     Width="180" Margin="8,0"
-                                     Style="{DynamicResource DefaultPasswordBoxStyle}"/>
-                        <ComboBox Width="140" Margin="8,0"
-                                  SelectedItem="{Binding NewUserType}">
-                            <ComboBoxItem Content="Студент" Tag="0"/>
-                            <ComboBoxItem Content="Викладач" Tag="1"/>
-                            <ComboBoxItem Content="Адмін" Tag="2"/>
+                        <ui:TextBox Width="180" Margin="8,0" PlaceholderText="Логін" Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}"/>
+                        <PasswordBox x:Name="PasswordBox" Width="180" Margin="8,0" Style="{DynamicResource DefaultPasswordBoxStyle}"/>
+                        
+                        <ComboBox Width="140" Margin="8,0" SelectedIndex="{Binding NewUserType}">
+                            <ComboBoxItem Content="Студент"/>
+                            <ComboBoxItem Content="Викладач"/>
+                            <ComboBoxItem Content="Адмін"/>
                         </ComboBox>
-                        <ui:Button Content="Додати" Width="100" Margin="8,0"
-                                   Appearance="Primary"
-                                   Click="AddUser_Click"/>
-                        <ui:Button Content="Видалити" Width="100" Margin="8,0"
-                                   Appearance="Danger"
-                                   Command="{Binding DeleteUserCommand}"/>
+                        
+                        <ui:Button Content="Додати" Width="90" Margin="8,0" Appearance="Primary" Click="AddUser_Click"/>
+                        <ui:Button Content="Зберегти зміни" Width="130" Margin="8,0" Appearance="Secondary" Command="{Binding UpdateUserCommand}"/>
+                        <ui:Button Content="Видалити" Width="90" Margin="8,0" Appearance="Danger" Command="{Binding DeleteUserCommand}"/>
                     </StackPanel>
 
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding Users}"
-                              SelectedItem="{Binding SelectedUser}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True">
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding AdminUsers}" SelectedItem="{Binding SelectedUser}" AutoGenerateColumns="False" IsReadOnly="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding UserId}" Width="60"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding UserId}" Width="60" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Логін" Binding="{Binding Username}" Width="*"/>
-                            <DataGridTextColumn Header="Тип" Binding="{Binding UserType}" Width="120"/>
+                            <DataGridTextColumn Header="Тип (0-Студ,1-Викл,2-Адм)" Binding="{Binding UserType}" Width="190"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
 
+            <!-- 2. Курси -->
             <TabItem Header="Курси">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
@@ -70,34 +62,127 @@
                     </Grid.RowDefinitions>
 
                     <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
-                        <ui:TextBox Width="250" Margin="8,0"
-                                    PlaceholderText="Назва курсу"
-                                    Text="{Binding NewCourseName, UpdateSourceTrigger=PropertyChanged}"/>
-                        <ComboBox Width="250" Margin="8,0"
-                                  ItemsSource="{Binding Teachers}"
-                                  DisplayMemberPath="Username"
-                                  SelectedItem="{Binding SelectedTeacher}"/>
-                        <ui:Button Content="Додати" Width="100" Margin="8,0"
-                                   Appearance="Primary"
-                                   Command="{Binding AddCourseCommand}"/>
-                        <ui:Button Content="Видалити" Width="100" Margin="8,0"
-                                   Appearance="Danger"
-                                   Command="{Binding DeleteCourseCommand}"/>
+                        <ui:TextBox Width="200" Margin="8,0" PlaceholderText="Новий курс" Text="{Binding NewCourseName, UpdateSourceTrigger=PropertyChanged}"/>
+                        <ComboBox Width="180" Margin="8,0" ItemsSource="{Binding Teachers}" DisplayMemberPath="Username" SelectedItem="{Binding SelectedTeacher}"/>
+                        <ui:Button Content="Додати" Width="90" Margin="8,0" Appearance="Primary" Command="{Binding AddCourseCommand}"/>
+                        <ui:Button Content="Зберегти зміни" Width="130" Margin="8,0" Appearance="Secondary" Command="{Binding UpdateCourseCommand}"/>
+                        <ui:Button Content="Видалити" Width="90" Margin="8,0" Appearance="Danger" Command="{Binding DeleteCourseCommand}"/>
                     </StackPanel>
 
-                    <DataGrid Grid.Row="1"
-                              ItemsSource="{Binding Courses}"
-                              SelectedItem="{Binding SelectedCourse}"
-                              AutoGenerateColumns="False"
-                              IsReadOnly="True">
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding AdminCourses}" SelectedItem="{Binding SelectedCourse}" AutoGenerateColumns="False" IsReadOnly="False">
                         <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding CourseId}" Width="60"/>
+                            <DataGridTextColumn Header="ID" Binding="{Binding CourseId}" Width="60" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Назва" Binding="{Binding CourseName}" Width="*"/>
-                            <DataGridTextColumn Header="ID Викладача" Binding="{Binding TeacherId}" Width="120"/>
+                            <DataGridTextColumn Header="Вчитель ID" Binding="{Binding TeacherId}" Width="80"/>
+                            <DataGridTextColumn Header="Викладач" Binding="{Binding TeacherName}" Width="120" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Початок" Binding="{Binding StartDate}" Width="140"/>
+                            <DataGridTextColumn Header="Кінець" Binding="{Binding EndDate}" Width="140"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
             </TabItem>
+
+            <!-- 3. Лекції -->
+            <TabItem Header="Лекції">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:Button Content="Зберегти зміни" Width="130" Margin="8,0" Appearance="Primary" Command="{Binding UpdateLectureCommand}"/>
+                        <ui:Button Content="Видалити" Width="90" Margin="8,0" Appearance="Danger" Command="{Binding DeleteLectureCommand}"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding AdminLectures}" SelectedItem="{Binding SelectedLecture}" AutoGenerateColumns="False" IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding LectureId}" Width="60" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ID Курсу" Binding="{Binding CourseId}" Width="80"/>
+                            <DataGridTextColumn Header="Назва Лекції" Binding="{Binding Title}" Width="*"/>
+                            <DataGridTextColumn Header="Відкрито з" Binding="{Binding AvailableFrom}" Width="140"/>
+                            <DataGridTextColumn Header="Відкрито до" Binding="{Binding AvailableUntil}" Width="140"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- 4. Тести -->
+            <TabItem Header="Тести">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:Button Content="Зберегти зміни" Width="130" Margin="8,0" Appearance="Primary" Command="{Binding UpdateTestCommand}"/>
+                        <ui:Button Content="Видалити" Width="90" Margin="8,0" Appearance="Danger" Command="{Binding DeleteTestCommand}"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding AdminTests}" SelectedItem="{Binding SelectedTest}" AutoGenerateColumns="False" IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding TestId}" Width="60" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="ID Курсу" Binding="{Binding CourseId}" Width="80"/>
+                            <DataGridTextColumn Header="Назва Тесту" Binding="{Binding TestName}" Width="*"/>
+                            <DataGridTextColumn Header="Відкрито з" Binding="{Binding AvailableFrom}" Width="140"/>
+                            <DataGridTextColumn Header="Відкрито до" Binding="{Binding AvailableUntil}" Width="140"/>
+                            <DataGridTextColumn Header="Фінальний (0/1)" Binding="{Binding IsFinalTest}" Width="110"/>
+                            <DataGridTextColumn Header="Макс. Бал" Binding="{Binding TestMax}" Width="80"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- 5. Підписки -->
+            <TabItem Header="Підписки">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:Button Content="Скасувати підписку (Видалити)" Width="220" Margin="8,0" Appearance="Danger" Command="{Binding DeleteEnrollmentCommand}"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding AdminEnrollments}" SelectedItem="{Binding SelectedEnrollment}" AutoGenerateColumns="False" IsReadOnly="True">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding EnrollmentId}" Width="60"/>
+                            <DataGridTextColumn Header="Студент" Binding="{Binding StudentName}" Width="160"/>
+                            <DataGridTextColumn Header="Курс" Binding="{Binding CourseName}" Width="*"/>
+                            <DataGridTextColumn Header="Дата Підписки" Binding="{Binding EnrollmentDate}" Width="160"/>
+                            <DataGridTextColumn Header="Оцінка" Binding="{Binding FinalGrade}" Width="80"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <!-- 6. Результати -->
+            <TabItem Header="Результати">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,16">
+                        <ui:Button Content="Зберегти зміни" Width="130" Margin="8,0" Appearance="Primary" Command="{Binding UpdateTestResultCommand}"/>
+                        <ui:Button Content="Видалити" Width="90" Margin="8,0" Appearance="Danger" Command="{Binding DeleteTestResultCommand}"/>
+                    </StackPanel>
+
+                    <DataGrid Grid.Row="1" ItemsSource="{Binding AdminTestResults}" SelectedItem="{Binding SelectedTestResult}" AutoGenerateColumns="False" IsReadOnly="False">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="ID" Binding="{Binding ResultId}" Width="60" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Студент" Binding="{Binding StudentName}" Width="160" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Тест" Binding="{Binding TestName}" Width="*"/>
+                            <DataGridTextColumn Header="Отриманий Бал" Binding="{Binding TestMark}" Width="120"/>
+                            <DataGridTextColumn Header="Макс. Бал" Binding="{Binding MaxMark}" Width="100"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Grid>
+            </TabItem>
+
         </TabControl>
     </Grid>
 </ui:FluentWindow>
