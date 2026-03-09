@@ -28,7 +28,10 @@ public class DatabaseService
         using (var conn = new SqliteConnection(connectionString))
         {
             conn.Open();
-            var command = new SqliteCommand("SELECT * FROM Courses", conn);
+            var command = new SqliteCommand(@"
+                SELECT c.CourseId, c.CourseName, u.UserId, u.Username
+                FROM Courses c
+                JOIN Users u ON c.TeacherId = u.UserId", conn);
             var reader = command.ExecuteReader();
 
             List<Course> courses = new List<Course>();
@@ -37,7 +40,12 @@ public class DatabaseService
                 courses.Add(new Course 
                 { 
                     CourseId = reader.GetInt32(0), 
-                    CourseName = reader.GetString(1) 
+                    CourseName = reader.GetString(1),
+                    Instructor = new Teacher
+                    {
+                        UserId = reader.GetInt32(2),
+                        Username = reader.GetString(3)
+                    }
                 });
             }
             return courses;
