@@ -148,8 +148,7 @@ public class TestViewModel : INotifyPropertyChanged
 
         if (_test?.IsFinalTest == true)
         {
-            var finalGrade = maxPoints > 0 ? (totalPoints / maxPoints) * 100 : 0;
-            _databaseService.SaveFinalGrade(_userId, _courseId, finalGrade);
+            _databaseService.SaveFinalGrade(_userId, _courseId, totalPoints);
         }
 
         GoToStudentPage();

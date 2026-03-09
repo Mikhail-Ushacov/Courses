@@ -6,7 +6,6 @@
       Title="Сторінка студента">
 
     <Page.Resources>
-        <converters:GradeDisplayConverter x:Key="GradeDisplayConverter"/>
     </Page.Resources>
 
     <Grid Margin="24">
@@ -59,7 +58,7 @@
                                 <TextBlock Text="Оцінка: "
                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                            VerticalAlignment="Center"/>
-                                <TextBlock Text="{Binding FinalGrade, Converter={StaticResource GradeDisplayConverter}}"
+                                <TextBlock Text="{Binding GradeDisplay}"
                                            FontWeight="SemiBold"
                                            FontSize="16"
                                            VerticalAlignment="Center"/>
