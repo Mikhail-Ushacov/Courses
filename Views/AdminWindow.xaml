@@ -47,7 +47,7 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding UserId}" Width="60" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Логін" Binding="{Binding Username}" Width="*"/>
-                            <DataGridTextColumn Header="Тип (0-Студ,1-Викл,2-Адм)" Binding="{Binding UserType}" Width="190"/>
+                            <DataGridTextColumn Header="Тип (0-Студент, 1-Викладач, 2-Адміністратор)" Binding="{Binding UserType}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -73,10 +73,10 @@
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding CourseId}" Width="60" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Назва" Binding="{Binding CourseName}" Width="*"/>
-                            <DataGridTextColumn Header="Вчитель ID" Binding="{Binding TeacherId}" Width="80"/>
+                            <DataGridTextColumn Header="Вчитель ID" Binding="{Binding TeacherId}" Width="100"/>
                             <DataGridTextColumn Header="Викладач" Binding="{Binding TeacherName}" Width="120" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="Початок" Binding="{Binding StartDate}" Width="140"/>
-                            <DataGridTextColumn Header="Кінець" Binding="{Binding EndDate}" Width="140"/>
+                            <DataGridTextColumn Header="Початок" Binding="{Binding StartDate}" Width="*"/>
+                            <DataGridTextColumn Header="Кінець" Binding="{Binding EndDate}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -98,10 +98,10 @@
                     <DataGrid Grid.Row="1" ItemsSource="{Binding AdminLectures}" SelectedItem="{Binding SelectedLecture}" AutoGenerateColumns="False" IsReadOnly="False">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="ID" Binding="{Binding LectureId}" Width="60" IsReadOnly="True"/>
-                            <DataGridTextColumn Header="ID Курсу" Binding="{Binding CourseId}" Width="80"/>
+                            <DataGridTextColumn Header="ID Курсу" Binding="{Binding CourseId}" Width="*"/>
                             <DataGridTextColumn Header="Назва Лекції" Binding="{Binding Title}" Width="*"/>
-                            <DataGridTextColumn Header="Відкрито з" Binding="{Binding AvailableFrom}" Width="140"/>
-                            <DataGridTextColumn Header="Відкрито до" Binding="{Binding AvailableUntil}" Width="140"/>
+                            <DataGridTextColumn Header="Відкрито з" Binding="{Binding AvailableFrom}" Width="*"/>
+                            <DataGridTextColumn Header="Відкрито до" Binding="{Binding AvailableUntil}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -125,10 +125,10 @@
                             <DataGridTextColumn Header="ID" Binding="{Binding TestId}" Width="60" IsReadOnly="True"/>
                             <DataGridTextColumn Header="ID Курсу" Binding="{Binding CourseId}" Width="80"/>
                             <DataGridTextColumn Header="Назва Тесту" Binding="{Binding TestName}" Width="*"/>
-                            <DataGridTextColumn Header="Відкрито з" Binding="{Binding AvailableFrom}" Width="140"/>
-                            <DataGridTextColumn Header="Відкрито до" Binding="{Binding AvailableUntil}" Width="140"/>
-                            <DataGridTextColumn Header="Фінальний (0/1)" Binding="{Binding IsFinalTest}" Width="110"/>
-                            <DataGridTextColumn Header="Макс. Бал" Binding="{Binding TestMax}" Width="80"/>
+                            <DataGridTextColumn Header="Відкрито з" Binding="{Binding AvailableFrom}" Width="*"/>
+                            <DataGridTextColumn Header="Відкрито до" Binding="{Binding AvailableUntil}" Width="*"/>
+                            <DataGridTextColumn Header="Фінальний (0/1)" Binding="{Binding IsFinalTest}" Width="*"/>
+                            <DataGridTextColumn Header="Макс. Бал" Binding="{Binding TestMax}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
                 </Grid>
@@ -151,7 +151,7 @@
                             <DataGridTextColumn Header="ID" Binding="{Binding EnrollmentId}" Width="60"/>
                             <DataGridTextColumn Header="Студент" Binding="{Binding StudentName}" Width="160"/>
                             <DataGridTextColumn Header="Курс" Binding="{Binding CourseName}" Width="*"/>
-                            <DataGridTextColumn Header="Дата Підписки" Binding="{Binding EnrollmentDate}" Width="160"/>
+                            <DataGridTextColumn Header="Дата Підписки" Binding="{Binding EnrollmentDate}" Width="*"/>
                             <DataGridTextColumn Header="Оцінка" Binding="{Binding FinalGrade}" Width="80"/>
                         </DataGrid.Columns>
                     </DataGrid>
@@ -176,10 +176,25 @@
                             <DataGridTextColumn Header="ID" Binding="{Binding ResultId}" Width="60" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Студент" Binding="{Binding StudentName}" Width="160" IsReadOnly="True"/>
                             <DataGridTextColumn Header="Тест" Binding="{Binding TestName}" Width="*"/>
-                            <DataGridTextColumn Header="Отриманий Бал" Binding="{Binding TestMark}" Width="120"/>
-                            <DataGridTextColumn Header="Макс. Бал" Binding="{Binding MaxMark}" Width="100"/>
+                            <DataGridTextColumn Header="Отриманий Бал" Binding="{Binding TestMark}" Width="*"/>
+                            <DataGridTextColumn Header="Макс. Бал" Binding="{Binding MaxMark}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="Вихід">
+                <Grid>
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Ви дійсно бажаєте вийти з акаунта?" FontSize="20" FontWeight="SemiBold" Margin="0,0,0,20" HorizontalAlignment="Center"/>
+                        <ui:Button Content="Вийти з акаунта" 
+                                   Icon="{ui:SymbolIcon ArrowExit20}" 
+                                   Appearance="Danger" 
+                                   Click="LogoutButton_Click" 
+                                   HorizontalAlignment="Center" 
+                                   Padding="24,12"
+                                   FontSize="16"/>
+                    </StackPanel>
                 </Grid>
             </TabItem>
 

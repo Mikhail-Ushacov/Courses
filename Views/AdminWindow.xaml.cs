@@ -23,9 +23,12 @@ namespace Courses
             PasswordBox.Clear();
         }
 
-        private void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void LogoutButton_Click(object sender, RoutedEventArgs e)
         {
-
+            Courses.Services.CurrentUser.Logout();
+            var loginPage = new Courses.Views.LoginPage();
+            loginPage.Show();
+            this.Close();
         }
     }
 }
