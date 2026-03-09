@@ -1,5 +1,7 @@
 using System.Collections.ObjectModel;
 using Courses.Models;
+using System.Linq;
+using Courses.Services;
 
 public class StudentListViewModel
 {
@@ -7,28 +9,46 @@ public class StudentListViewModel
 
     public string CourseName { get; set; }
 
-    public ObservableCollection<StudentGradeDisplay> Students { get; set; }
+    public ObservableCollection<StudentEnrollmentDisplay> Students { get; set; }
 
     public StudentListViewModel(int courseId)
     {
         _databaseService = new DatabaseService();
 
-        var course = _databaseService.GetCourseById(courseId);
-        CourseName = course?.CourseName ?? "Unknown Course";
+        int teacherId = CurrentUser.User?.UserId ?? 0;
+        var courses = _databaseService.GetCoursesByTeacher(teacherId);
 
-        var students = _databaseService.GetStudentsByCourse(courseId);
+        if (courseId > 0)
+        {
+            courses = courses.Where(c => c.CourseId == courseId).ToList();
+            CourseName = courses.FirstOrDefault()?.CourseName ?? "Невідомий курс";
+        }
+        else
+        {
+            CourseName = "Всі курси";
+        }
 
-        Students = new ObservableCollection<StudentGradeDisplay>(
-            students.Select(s => new StudentGradeDisplay
+        Students = new ObservableCollection<StudentEnrollmentDisplay>();
+
+        foreach (var course in courses)
+        {
+            var studentsInCourse = _databaseService.GetStudentsByCourse(course.CourseId);
+            foreach (var s in studentsInCourse)
             {
-                Username = s.student.Username,
-                Grade = s.grade
-            }));
+                Students.Add(new StudentEnrollmentDisplay
+                {
+                    Username = s.student.Username,
+                    CourseName = course.CourseName,
+                    Confirmed = "✔   ❌"
+                });
+            }
+        }
     }
 }
 
-public class StudentGradeDisplay
+public class StudentEnrollmentDisplay
 {
     public string Username { get; set; }
-    public double? Grade { get; set; }
+    public string CourseName { get; set; }
+    public string Confirmed { get; set; }
 }

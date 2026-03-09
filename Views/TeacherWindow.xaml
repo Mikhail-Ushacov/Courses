@@ -70,7 +70,7 @@
                                Margin="4"
                                Padding="12,10"/>
 
-                    <ui:Button Content="Студенти"
+                    <ui:Button Content="Записи на курс"
                                Icon="{ui:SymbolIcon People24}"
                                Command="{Binding GoToStudentListPageCommand}"
                                HorizontalAlignment="Stretch"
