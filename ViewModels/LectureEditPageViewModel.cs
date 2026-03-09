@@ -16,6 +16,8 @@ namespace Courses.ViewModels
         private int? _lectureId;
         private string _title = "Нова лекція";
         private string _author = "Кафедра";
+        private DateTime? _availableFrom;
+        private DateTime? _availableUntil;
 
         public string Title { get => _title; set { _title = value; OnPropertyChanged(nameof(Title)); } }
         public string Author { get => _author; set { _author = value; OnPropertyChanged(nameof(Author)); } }
@@ -23,6 +25,9 @@ namespace Courses.ViewModels
 
         public RelayCommand AddSectionCommand { get; }
         public RelayCommand SaveCommand { get; }
+
+        public DateTime? AvailableFrom { get => _availableFrom; set { _availableFrom = value; OnPropertyChanged(nameof(AvailableFrom)); } }
+        public DateTime? AvailableUntil { get => _availableUntil; set { _availableUntil = value; OnPropertyChanged(nameof(AvailableUntil)); } }
 
         public LectureEditPageViewModel(int courseId, int? lectureId = null)
         {
@@ -42,6 +47,8 @@ namespace Courses.ViewModels
             if (lecture != null && File.Exists(lecture.ContentFilePath))
             {
                 Title = lecture.Title;
+                AvailableFrom = lecture.AvailableFrom?.DateTime;
+                AvailableUntil = lecture.AvailableUntil?.DateTime;
                 try {
                     var doc = XDocument.Load(lecture.ContentFilePath);
                     Author = doc.Root?.Element("author")?.Value ?? Author;
@@ -64,7 +71,7 @@ namespace Courses.ViewModels
                 Sections.Select(s => new XElement("section", new XElement("heading", s.Heading), new XElement("paragraph", s.Paragraph)))
             ));
             doc.Save(filePath);
-            _dbService.SaveLectureToDb(_courseId, Title, filePath, _lectureId);
+            _dbService.SaveLectureToDb(_courseId, Title, filePath, AvailableFrom, AvailableUntil, _lectureId);
             AppNavigationService.GoBack();
         }
 

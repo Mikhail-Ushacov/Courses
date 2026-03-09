@@ -726,4 +726,47 @@ public int SaveTestToDb(int courseId, string name, string filePath, int? testId 
     var result = cmd.ExecuteScalar();
     return testId ?? Convert.ToInt32(result);
 }
+
+public int SaveLectureToDb(int courseId, string title, string filePath, DateTimeOffset? from, DateTimeOffset? until, int? lectureId = null)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    SqliteCommand cmd;
+    if (lectureId.HasValue) {
+        cmd = new SqliteCommand("UPDATE Lectures SET Title=@t, ContentFilePath=@p, AvailableFrom=@af, AvailableUntil=@au WHERE LectureId=@id", conn);
+        cmd.Parameters.AddWithValue("@id", lectureId.Value);
+    } else {
+        cmd = new SqliteCommand("INSERT INTO Lectures (CourseId, Title, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (@cid, @t, @p, @af, @au); SELECT last_insert_rowid();", conn);
+        cmd.Parameters.AddWithValue("@cid", courseId);
+    }
+    cmd.Parameters.AddWithValue("@t", title);
+    cmd.Parameters.AddWithValue("@p", filePath);
+    cmd.Parameters.AddWithValue("@af", from?.ToString("o") ?? (object)DBNull.Value);
+    cmd.Parameters.AddWithValue("@au", until?.ToString("o") ?? (object)DBNull.Value);
+    
+    var result = cmd.ExecuteScalar();
+    return lectureId ?? Convert.ToInt32(result);
+}
+
+public int SaveTestToDb(int courseId, string name, string filePath, DateTimeOffset? from, DateTimeOffset? until, int? testId = null)
+{
+    using var conn = new SqliteConnection(ConnectionString);
+    conn.Open();
+    SqliteCommand cmd;
+    if (testId.HasValue) {
+        cmd = new SqliteCommand("UPDATE Tests SET TestName=@n, ContentFilePath=@p, AvailableFrom=@af, AvailableUntil=@au WHERE TestId=@id", conn);
+        cmd.Parameters.AddWithValue("@id", testId.Value);
+    } else {
+        cmd = new SqliteCommand("INSERT INTO Tests (CourseId, TestName, ContentFilePath, AvailableFrom, AvailableUntil) VALUES (@cid, @n, @p, @af, @au); SELECT last_insert_rowid();", conn);
+        cmd.Parameters.AddWithValue("@cid", courseId);
+    }
+    cmd.Parameters.AddWithValue("@n", name);
+    cmd.Parameters.AddWithValue("@p", filePath);
+    cmd.Parameters.AddWithValue("@af", from?.ToString("o") ?? (object)DBNull.Value);
+    cmd.Parameters.AddWithValue("@au", until?.ToString("o") ?? (object)DBNull.Value);
+    
+    var result = cmd.ExecuteScalar();
+    return testId ?? Convert.ToInt32(result);
+}
+
 }

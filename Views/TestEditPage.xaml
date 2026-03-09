@@ -45,6 +45,25 @@
 
             <ui:Button Content="Додати питання" Command="{Binding AddQuestionCommand}" Margin="0,0,0,20"/>
 
+            <TextBlock Text="Термін проведення тесту" Margin="0,15,0,5" FontWeight="SemiBold"/>
+            <Grid Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    <TextBlock Text="Відкрито з:" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
+                    <DatePicker SelectedDate="{Binding AvailableFrom}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2">
+                    <TextBlock Text="Закрито після:" FontSize="12" Foreground="Gray" Margin="0,0,0,5"/>
+                    <DatePicker SelectedDate="{Binding AvailableUntil}" />
+                </StackPanel>
+            </Grid>
+
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                 <ui:Button Content="Скасувати" Click="Cancel_Click" Margin="0,0,10,0"/>
                 <ui:Button Content="Зберегти" Command="{Binding SaveCommand}" Appearance="Primary"/>

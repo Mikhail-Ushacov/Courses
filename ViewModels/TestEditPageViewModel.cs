@@ -15,6 +15,10 @@ namespace Courses.ViewModels
         private int _courseId;
         private int? _testId;
         private string _testName = "Новий тест";
+        private DateTime? _availableFrom;
+        private DateTime? _availableUntil;
+        public DateTime? AvailableFrom { get => _availableFrom; set { _availableFrom = value; OnPropertyChanged(nameof(AvailableFrom)); } }
+        public DateTime? AvailableUntil { get => _availableUntil; set { _availableUntil = value; OnPropertyChanged(nameof(AvailableUntil)); } }
 
         public string TestName
         {
@@ -49,6 +53,8 @@ namespace Courses.ViewModels
             if (test != null && File.Exists(test.ContentFilePath))
             {
                 TestName = test.TestName;
+                AvailableFrom = test.AvailableFrom?.DateTime;
+                AvailableUntil = test.AvailableUntil?.DateTime;
                 try
                 {
                     var doc = XDocument.Load(test.ContentFilePath);
@@ -111,7 +117,7 @@ namespace Courses.ViewModels
             ));
 
             doc.Save(filePath);
-            _dbService.SaveTestToDb(_courseId, TestName, filePath, _testId);
+            _dbService.SaveTestToDb(_courseId, TestName, filePath, AvailableFrom, AvailableUntil, _testId);
             AppNavigationService.GoBack();
         }
 
