@@ -7,9 +7,16 @@
         <StackPanel MaxWidth="800">
             <TextBlock Text="Редагування лекції" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
             
+            <TextBlock Text="Курс" Margin="0,0,0,5" FontWeight="SemiBold"/>
+            <ComboBox ItemsSource="{Binding AvailableCourses}" 
+                    SelectedItem="{Binding SelectedCourse}" 
+                    DisplayMemberPath="CourseName" 
+                    Margin="0,0,0,15" 
+                    HorizontalAlignment="Stretch"/>
+
             <ui:TextBox Text="{Binding Title, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Назва лекції" Margin="0,0,0,10"/>
             <ui:TextBox Text="{Binding Author, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Автор (кафедра)" Margin="0,0,0,10"/>
-            
+                        
             <TextBlock Text="Секції лекції" Margin="0,10,0,5" FontWeight="SemiBold"/>
             <ItemsControl ItemsSource="{Binding Sections}">
                 <ItemsControl.ItemTemplate>

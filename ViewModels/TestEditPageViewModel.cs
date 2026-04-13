@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Xml.Linq;
 using Courses.Services;
+using Courses.Models;
 
 namespace Courses.ViewModels
 {
@@ -27,14 +28,28 @@ namespace Courses.ViewModels
         }
 
         public ObservableCollection<QuestionEditModel> Questions { get; set; } = new ObservableCollection<QuestionEditModel>();
-
         public ICommand AddQuestionCommand { get; }
         public ICommand SaveCommand { get; }
+        
+        public ObservableCollection<Course> AvailableCourses { get; set; } = new();
+        private Course? _selectedCourse;
+        public Course? SelectedCourse 
+        { 
+            get => _selectedCourse; 
+            set { _selectedCourse = value; OnPropertyChanged(nameof(SelectedCourse)); } 
+        }
 
         public TestEditPageViewModel(int courseId, int? testId = null)
         {
             _courseId = courseId;
             _testId = testId;
+
+             if (CurrentUser.User != null)
+            {
+                var courses = _dbService.GetCoursesByTeacher(CurrentUser.User.UserId);
+                foreach (var c in courses) AvailableCourses.Add(c);
+                SelectedCourse = AvailableCourses.FirstOrDefault(c => c.CourseId == _courseId);
+            }
 
             AddQuestionCommand = new RelayCommand(_ => {
                 var q = new QuestionEditModel { QuestionText = "Нове питання" };
@@ -45,6 +60,7 @@ namespace Courses.ViewModels
             SaveCommand = new RelayCommand(_ => SaveTest());
 
             if (_testId.HasValue) LoadExistingTest(_testId.Value);
+            
         }
 
         private void LoadExistingTest(int id)
@@ -88,7 +104,7 @@ namespace Courses.ViewModels
 
         private void SaveTest()
         {
-            if (string.IsNullOrWhiteSpace(TestName)) return;
+            if (string.IsNullOrWhiteSpace(TestName) || SelectedCourse == null) return;
 
             string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Courses", "Tests");
             if (!Directory.Exists(path)) Directory.CreateDirectory(path);
@@ -117,7 +133,7 @@ namespace Courses.ViewModels
             ));
 
             doc.Save(filePath);
-            _dbService.SaveTestToDb(_courseId, TestName, filePath, AvailableFrom, AvailableUntil, _testId);
+            _dbService.SaveTestToDb(SelectedCourse.CourseId, TestName, filePath, AvailableFrom, AvailableUntil, _testId);
             AppNavigationService.GoBack();
         }
 

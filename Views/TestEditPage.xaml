@@ -6,6 +6,14 @@
     <ScrollViewer Padding="24">
         <StackPanel MaxWidth="800">
             <TextBlock Text="Редагування тесту" FontSize="24" FontWeight="Bold" Margin="0,0,0,20"/>
+            
+            <TextBlock Text="Оберіть курс" Margin="0,0,0,5" FontWeight="SemiBold"/>
+            <ComboBox ItemsSource="{Binding AvailableCourses}" 
+                    SelectedItem="{Binding SelectedCourse}" 
+                    DisplayMemberPath="CourseName" 
+                    Margin="0,0,0,15" 
+                    HorizontalAlignment="Stretch"/>
+
             <ui:TextBox Text="{Binding TestName, UpdateSourceTrigger=PropertyChanged}" PlaceholderText="Назва тесту" Margin="0,0,0,20"/>
 
             <ItemsControl ItemsSource="{Binding Questions}">
